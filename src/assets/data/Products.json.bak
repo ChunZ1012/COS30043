@@ -1,0 +1,127 @@
+[
+    {
+      "title": "Testing Product 1",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": false,
+      "price": 14.99,
+      "type": "Recommended",
+      "catg": "pc"
+    },
+    {
+      "title": "Testing Product 2",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": true,
+      "price": 26.99,
+      "distAmt": 3.0,
+      "type": "Recommended",
+      "catg": "sp"
+    },
+    {
+      "title": "Testing Product 3",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": true,
+      "price": 44.99,
+      "distAmt": 1.0,
+      "type": "Best Seller",
+      "catg": "ep"
+    },
+    {
+      "title": "Testing Product 4",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": false,
+      "price": 99.99,
+      "distAmt": 0.0,
+      "type": "Recommended",
+      "catg": "hp"
+    },
+    {
+      "title": "Testing Product 5",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": false,
+      "price": 883.98,
+      "distAmt": 0.0,
+      "type": "New Arrival",
+      "catg": "hp"
+    },
+    {
+      "title": "Testing Product 6",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": true,
+      "price": 488.99,
+      "distAmt": 25.0,
+      "type": "Best Seller",
+      "catg": "ep"
+    },
+    {
+      "title": "Testing Product 7",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": false,
+      "price": 52.79,
+      "distAmt": 0.0,
+      "type": "New Arrival",
+      "catg": "pc"
+    },
+    {
+      "title": "Testing Product 8",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": false,
+      "price": 49.99,
+      "distAmt": 3.0,
+      "type": "Best Seller",
+      "catg": "sp"
+    },
+    {
+      "title": "Testing Product 9",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": false,
+      "price": 89.00,
+      "distAmt": 0.0,
+      "type": "Recommended",
+      "catg": "sp"
+    },
+    {
+      "title": "Testing Product 10",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": false,
+      "price": 38,
+      "distAmt": 0.0,
+      "type": "Best Seller",
+      "catg": "sp"
+    },
+    {
+      "title": "Testing Product 11",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": true,
+      "price": 44.99,
+      "distAmt": 2.59,
+      "type": "Recommended",
+      "catg": "hp"
+    },
+    {
+      "title": "Testing Product 12",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": true,
+      "price": 44.99,
+      "distAmt": 2.59,
+      "type": "Recommended",
+      "catg": "hp"
+    },
+    {
+      "title": "Testing Product 13",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": true,
+      "price": 44.99,
+      "distAmt": 2.59,
+      "type": "Recommended",
+      "catg": "hp"
+    },
+    {
+      "title": "Testing Product 14",
+      "url": "https://via.placeholder.com/300x300",
+      "discount": true,
+      "price": 44.99,
+      "distAmt": 2.59,
+      "type": "Recommended",
+      "catg": "hp"
+    }
+]

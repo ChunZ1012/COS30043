@@ -1,0 +1,77 @@
+[
+  '{{repeat(70, 100)}}',
+  {
+    id:'{{index() + 1}}',
+    title:'{{lorem(integer(2, 5), "words")}}',
+    discount: '{{bool()}}',
+    price: '{{floating(2, 2899, 2, "0.00")}}',
+    url: function() {
+      var baseUrl = 'https://via.placeholder.com/';
+      
+      var maxWidth = 600;
+      var maxHeight = 600;
+      
+      var width = Math.floor(Math.random() * maxWidth);
+      var height = Math.ceil(Math.random() * maxHeight);
+      
+      return baseUrl + width + 'x' + width;
+    },
+    distAmt:'{{floating(0, 50, 2, "0.00")}}',
+    type: function () {
+      var types = ['New Arrivals', 'Best Seller', 'Recommended', 'Promotion'];
+      return types[Math.ceil(Math.random() * types.length - 1)];
+    },
+    catg: function () {
+      var catg = ['pc', 'sp', 'ep', 'hp'];
+      return catg[Math.ceil(Math.random() * catg.length - 1)];
+    },
+    info: {
+      images: function() {
+        var numOfPicture = Math.ceil(Math.random() * 7);
+        
+        var baseUrl = 'https://via.placeholder.com/';
+        var maxWidth = 600;
+        var width = Math.floor(Math.random() * maxWidth);
+        
+        var imgUrls = [];
+        for(var i = 0; i < numOfPicture; i++) {
+         imgUrls.push((baseUrl + width + 'x' + width)); 
+        }
+        
+        return imgUrls;
+      },
+      variant: {
+        type: function() {
+          var types = ['Color', 'Size', 'Length'];
+          return types[Math.ceil(Math.random() * types.length - 1)];
+        },
+        values: [
+          '{{repeat(integer(2, 6))}}',
+          '{{lorem(integer(1, 3), "words")}}'
+        ]
+      },
+      reviews: [
+        '{{repeat(1, 20)}}',
+        {
+          userAvatarUrl:'https://via.placeholder.com/64x64',
+          userDisplayName:'{{firstName()}} {{surname()}}',
+          userRating:'{{floating(1, 5, 2, "0.00")}}',
+          userComment:'{{lorem(integer(1, 4), "sentences")}}',
+          userCommentTime:'{{date(new Date(2018, 06, 16), new Date(), "dd/MM/YYYY")}}'
+        }
+      ],
+      availQty:'{{integer(0, 45)}}',
+      description:'{{lorem(integer(2, 8), "paragraphs")}}',
+      overallRating:function() {
+        var rating = 0.00; 
+        for(var i = 0; i < this.reviews.length; i++) {
+         rating += this.reviews[i].userRating; 
+        }
+        return (rating / this.reviews.length).toFixed(2);
+      },
+      totalComments: function() {
+        return this.reviews.length;
+      }
+    }
+  }
+]
