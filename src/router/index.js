@@ -1,58 +1,79 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import ContainerView from "../views/ContainerView.vue";
-import ProductListView from "@/views/misc/products/ProductListView.vue";
-import ProductDetailView from "@/views/misc/products/ProductDetailView.vue";
 
 const routes = [
   {
-    path: "/home-test",
-    name: "home",
-    component: HomeView,
-  },
-  {
-    path: "/test",
-    name: "test",
-    component: ContainerView,
-  },
-  {
     path: "/login",
     name: "Login",
-    component: () => import("../views/LoginView.vue"),
+    component: () => 
+      import("@/views/LoginView.vue"),
   },
   {
     path: "/register",
     name: "Register",
-    component: () => import("../views/RegisterView.vue"),
+    component: () => 
+      import("@/views/RegisterView.vue"),
   },
   {
     path: "/",
     name: "Container",
-    component: () => import("../views/ContainerView.vue"),
+    component: () => 
+      import("@/views/ContainerView.vue"),
     children: [
       {
         path: "",
         name: "Home",
-        component: HomeView,
+        component: () => 
+          import("@/views/HomeView.vue"),
       },
       {
-        path: "/products",
-        name: "Products",
-        component: ProductListView,
-        props: {
-          breadcrumbTitle: "All Products",
-        },
+        path: "products",
+        name: "ProductsContainer",
+        children: [
+          {
+            path:"all",
+            name:"Products",
+            component: () => 
+              import("@/views/misc/products/ProductListView.vue"),
+              props: {
+                breadcrumbTitle: "All Products",
+              },
+            sensitive:true,
+            strict:true
+          },
+          {
+            path:"types/:productType",
+            name:"ProductsType",
+            component: () => 
+              import("@/views/misc/products/ProductListView.vue"),
+            props:true,
+            strict:true,
+            sensitive:true
+          }
+        ]
       },
       {
-        path: "/products/view/:id",
+        path: "products/view/:id",
         name: "ProductDetail",
-        component: ProductDetailView,
+        component: () => 
+          import("@/views/misc/products/ProductDetailView.vue"),
         props:true
       },
       {
-        path: "/orders",
+        path: "orders",
         name: "Orders",
-        component: HomeView,
+        component: () => 
+          import("@/views/misc/orders/OrderListView.vue"),
+        // alias: ['/orders/view'],
+        props: {
+          breadcrumbTitle: "All Orders",
+        },
+      },
+      {
+        path: "orders/view/:orderId",
+        name: "OrderDetail",
+        component: () => 
+          import("@/views/misc/orders/OrderDetailView.vue"),
+        props: true
       }
     ],
   },

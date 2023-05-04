@@ -9,6 +9,7 @@ import colors from "vuetify/lib/util/colors.mjs";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
+import "@/assets/css/custom.scss";
 
 import VueSweetalert2 from "vue-sweetalert2";
 import '@sweetalert2/theme-material-ui/material-ui.min.css';
@@ -32,8 +33,7 @@ const vuetify = createVuetify({
         }
     }
 });
-*/
-
+*/  
 const sw2Theme = {
     confirmButtonColor: colors.indigo.darken2,
     cancelButtonColor: colors.red.darken2

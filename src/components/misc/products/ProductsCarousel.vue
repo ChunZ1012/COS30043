@@ -1,11 +1,28 @@
 <template>
   <!-- Products Carousel Header -->
-  <v-row class="my-2">
-    <h2 class="fw-bold my-2">{{ title }}</h2>
+  <div 
+    class="d-flex flex-row mt-4 mb-1 align-items-center"
+  >
+    <h2 class="fw-bold">{{ title }}</h2>
     <p class="fs-5" v-if="description === undefined || description.length <= 0">
       {{ description }}
     </p>
-  </v-row>
+    <v-spacer></v-spacer>
+    <v-btn
+      variant="text"
+      :to="{
+        name:'ProductsType',
+        params: {
+          productType:linkTo
+        }
+      }"
+    >
+      <template v-slot:prepend>
+        <v-icon
+          icon="mdi-arrow-right"></v-icon>
+      </template>
+      View More</v-btn>
+  </div>
   <!-- Products Carousel -->
   <v-slide-group
     show-arrows="hover"
@@ -13,7 +30,7 @@
     max="0"
     multiple="false"
     mandatory="false"
-    class="my-2"
+    class="my-1"
   >
     <v-slider-group-item v-for="(product, idx) in products" :key="idx">
       <v-col cols="12" class="my-2">
@@ -28,28 +45,6 @@
       </v-col>
     </v-slider-group-item>
   </v-slide-group>
-  <!--
-    <v-row
-        class="my-2 d-md-none d-none"
-    >
-        <v-col
-            cols="12"
-            md="4"
-            lg="4"
-            class="my-2"
-            v-for="(product, idx) in products"
-            :key="idx"
-        >
-            <Product
-                :title="product.title"
-                :url="product.url"
-                :price="product.price"
-                :discount="product.discount"
-                :distAmt="product?.distAmt"
-            ></Product>
-        </v-col>
-    </v-row>
-    -->
 </template>
 
 <script>
@@ -67,12 +62,16 @@ export default {
       type:String,
       default:""
     },
+    linkTo: {
+      type:String,
+      default:""
+    },
     products: [],
   },
   methods: {
     isMobileDevice() {
       return isMobile;
-    },
+    }
   },
   components: {
     ProductCard,

@@ -200,15 +200,7 @@
     </v-row>
 
     <Dialog 
-        ref="dialog"
-        :isLoading="false"
-        :persistent="true"
-        :confirmButtonText="'Back to Homepage'"
-        :singleButtonOnly="true"
-        :confirmButtonAction="{
-            type:'route',
-            name:'Home'
-        }"
+        ref="productDialog"
     ></Dialog>
 </template>
 
@@ -253,14 +245,11 @@ export default {
        }
     },
     created() {
-        // Pushing the vue props to the breadcrumbs list
-        this.breadcrumbs.push(this.breadcrumbTitle);
         for(let i in ProductData) {
             let product = ProductData[i];
 
             if(product.id == this.id) {
                 this.product = product;
-                console.log(this.product.info.overallRating)
                 break;
             }
         }
@@ -270,11 +259,13 @@ export default {
         if(this.product === undefined || this.product == {}) {
             this.promptDialog('Oops!', 'Sorry but seems like the item you view is no longer exist!');
         }
+        else {
+            // Pushing the vue props to the breadcrumbs list
+            this.breadcrumbs.push(this.product.title);
+        }
+        this.promptDialog("123", "123");
     },
     computed:{
-        breadcrumbTitle() {
-            return this.$route.query.name ?? '';
-        },
         isMobileDevice() {
             return isMobile;
         },
@@ -284,12 +275,8 @@ export default {
         }
     },
     methods: {
-        isMobileDevice() {
-            return isMobile;
-        },
         promptDialog(title, description) {
-            console.log(this.$refs.dialog);
-            this.$refs.dialog.showDialog(title, description)
+            this.$refs.productDialog.showDialog(title, description)
         }
     },
     watch: {

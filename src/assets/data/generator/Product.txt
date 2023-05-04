@@ -18,7 +18,7 @@
     },
     distAmt:'{{floating(0, 50, 2, "0.00")}}',
     type: function () {
-      var types = ['New Arrivals', 'Best Seller', 'Recommended', 'Promotion'];
+      var types = ['new-arrivals', 'best-seller', 'recommended', 'promotion'];
       return types[Math.ceil(Math.random() * types.length - 1)];
     },
     catg: function () {

@@ -55,6 +55,7 @@
 <script>
 export default {
     name: "Dialog",
+    /*
     props: {
         isPersistent: {
             type:Boolean,
@@ -93,6 +94,7 @@ export default {
             default:"Please wait"
         }
     },
+    */
     methods: {
         showDialog(title, desc) {
             let dTitle = (title !== undefined && title.length > 0) ? title : this.title;

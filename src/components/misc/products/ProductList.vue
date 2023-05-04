@@ -13,7 +13,7 @@
         label="Search"
         hide-details
         single-line
-        rounded="4"
+        rounded="16"
         class="col-12"
         variant="outlined"
         prepend-inner-icon="mdi-magnify"
@@ -102,7 +102,7 @@
       cols="12" 
       md="10"
     >
-      <h2>{{ breadcrumbTitle }}</h2>
+      <h2>{{ breadcrumbs.length > 1 ? breadcrumbs[1] : "" }}</h2>
       <v-row class="mt-2">
         <v-col
           cols="12"
@@ -132,6 +132,7 @@
         ellipsis="."
         variant="text"
         :size="isMobileDevice() ? 'small' : 'default'"
+        class="mt-md-4 mt-3"
       ></v-pagination>
     </v-col>
   </v-row>
@@ -147,6 +148,7 @@ ul.v-pagination__list {
 import { isMobile } from "mobile-device-detect";
 import ProductCard from "@/views/misc/products/ProductCardView.vue";
 import ProductData from '@/assets/data/Products.json';
+import ProductCategoryEnum from "@/assets/js/enums/ProductCategoryEnum.js"
 
 export default {
   name: "ProductList",
@@ -155,12 +157,17 @@ export default {
       type:String,
       default:""
     },
+    productType: {
+      type:String,
+      default:""
+    }
   },
   data: () => ({
     // #############
     // Real
     // #############
     breadcrumbs: ["Home"],
+    pType: "all",
     // Filter
     textSearch: "",
     selectedCategory: [],
@@ -191,17 +198,55 @@ export default {
       },
     ],
   }),
-  created() {
-    // Pushing the vue props to the breadcrumbs list
-    this.breadcrumbs.push(this.breadcrumbTitle);
-    // Testing, read data from json
-    // TODO: Remove line
-    this.products = ProductData;
+  beforeRouteUpdate(to, from, next) {
+    console.log(to);
+    console.log(from);
   },
-  mounted() {
-    this.filteredList = this.products;
+  created() {
+    this.initialize();
+    // Watch route changes
+    this.$watch(
+      () => this.$route.params,
+      (toParams, previousParams) => {
+        if(Object.hasOwn(toParams, 'productType')) {
+          if(Object.keys(ProductCategoryEnum).includes(toParams.productType)) {
+            this.initialize(toParams);
+          }
+        }
+      }
+    );
   },
   methods: {
+    initialize(toParams = undefined) {
+      // Testing, read data from json
+      this.products = ProductData;
+      // Get the default breadcrumb title (Use for All Product)
+      let breadcrumbTitle = this.breadcrumbTitle;
+
+      // productCategory is passed by the router (Defined in @/router/index.js)
+      // Triggered when the user is landing on this page, without accessing to other
+      // category page before landing
+      // If the user click on the other category page
+      if(toParams !== undefined) {
+        breadcrumbTitle = "";
+        this.pType = toParams.productType;
+      }
+      else if(this.productType.length > 0) {
+        this.pType = this.productType;
+      }
+      console.log(toParams == undefined);
+      // if the breadcrumb title is empty
+      // then we will set the title to based on the product type
+      if(breadcrumbTitle.length <= 0 || this.pType != 'all') breadcrumbTitle = this.getProductCategoryTitle(this.pType);
+      // Set the breadcrumb title
+      if(this.breadcrumbs.length > 1) this.breadcrumbs[1] = breadcrumbTitle;
+      else this.breadcrumbs.push(breadcrumbTitle);
+
+      // Assign the product list to products
+      this.filteredList = this.products;
+      // Filter the products
+      this.filterProducts();
+    },
     isMobileDevice() {
       return isMobile;
     },
@@ -216,6 +261,10 @@ export default {
       let templist = ((this.textSearch == undefined || this.textSearch.length <= 0) || (this.selectedCategory.length <= 0)) ? this.products : this.filteredList;
       let self = this;
 
+      // Filter by product type (eg. recommended, best-seller), exclude All Product
+      templist = templist.filter(p => (self.pType.toLowerCase() == "all") ? true : (self.pType.toLowerCase().includes(p.type.toLowerCase())));
+
+      // If the cateogy filter is selected at least one
       if(this.selectedCategory.length > 0) {
         templist = templist.filter(p => {
           // Check if the product has same category as selected categories
@@ -236,16 +285,18 @@ export default {
           );
         }
       }
-
+      // Filter by price range
       templist = templist.filter(p => {
         let finalPrice = p.discount ? (p.price - p.distAmt) : p.price;
-
         return (finalPrice >= this.priceRange[0]) && (finalPrice <= this.priceRange[1]);
-      })
+      });
 
       // Reset current page to 1
       this.currentPage = 1;
       this.filteredList = templist;
+    },
+    getProductCategoryTitle(category) {
+      return ProductCategoryEnum[category];
     }
   },
   watch: {

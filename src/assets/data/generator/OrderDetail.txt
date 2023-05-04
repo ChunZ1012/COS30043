@@ -1,0 +1,53 @@
+[
+  '{{repeat(30, 40)}}',
+  {
+    "id":'{{index() + 1}}',
+    "orderId": '{{guid()}}',
+    "orderProducts":[
+      '{{repeat(1, 4)}}',
+      {
+        "productId": '{{integer(1, 92)}}',
+        "productName":'{{lorem(integer(1, 5), "words")}}',
+        "productImageUrl":'https://via.placeholder.com/300x300',
+        "productVariant":'{{lorem(integer(1, 3), "words")}}',
+        "productQty":'{{integer(1, 20)}}',
+        "productPrice":'{{floating(0, 2499, 2, "0.00")}}'
+      }
+    ],
+    "orderTotalPrice": function() {
+      var total = parseFloat(0);
+      for(var i = 0; i < this.orderProducts.length; i++) {
+        total += parseFloat((this.orderProducts[i].productQty * this.orderProducts[i].productPrice).toFixed(2));
+      }
+      return total;
+    },
+    "orderDeliveryName":'{{surname()}} {{firstName()}}',
+    "orderDeliveryContact": '+601{{phone("x-xxxxxxx")}}',
+    "orderDeliveryEmail": '{{email()}}',
+    "orderDeliveryAddress":'{{integer(100, 999)}} {{street()}}, {{street()}}, {{city()}}, {{state()}}, {{integer(100, 10000)}}',
+    "orderDeliveryStatus": [
+      '{{repeat(0, 4)}}',
+      {
+        "orderStatus": function() {
+          var status = ['Placed', 'Packed', 'Picked', 'Shipping', 'Delivered'];
+          return status[Math.ceil(Math.random() * 4) - 1];
+        },
+        "orderStatusDate": '{{date(new Date(2016,1,1), new Date(), "dd/mm/YYYY")}}'
+      }
+    ],
+    "orderDeliveryTimelines":[
+      '{{repeat(0, 5)}}',
+      {
+        "description": '{{lorem(integer(1, 5), "words")}}',
+        "date": '{{date(new Date(2016,1,1), new Date(), "dd/mm/YYYY")}}'
+      }
+    ],
+    "orderDeliveredDate": function(){
+      var start = new Date(2016, 1, 1);
+      var end = new Date();
+      
+      var date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+      return (this.orderDeliveryStatus == 'Delivered' ? date : null);
+    }
+  }
+]

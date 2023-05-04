@@ -1,29 +1,73 @@
 <template>
   <v-app-bar flat rounded dense>
     <v-app-bar-nav-icon
-      v-if="isMobileDevice()"
+      class="d-block d-md-none"
       variant="text"
-      @click.stop="drawer = !drawer"
+      @click.stop.prevent="drawer = !drawer"
     >
     </v-app-bar-nav-icon>
 
     <v-container
-      v-if="!isMobileDevice()"
-      class="fill-height d-flex align-center"
+      class="fill-height d-md-flex d-none align-center"
       fluid
     >
-      <router-link
-        v-for="(link, idx) in links"
-        :to="{
-          name: link.routeName
-        }"
-        :key="idx"
-        class="text-decoration-none text-dark"
+      <template
+        v-for="(link, key) in links"
       >
-        <v-btn variant="text">
-          {{ link.title }}
-        </v-btn>
-      </router-link>
+        <template
+          v-if="link.children !== undefined && link.children.length > 0"
+        >
+          <v-menu
+            location="bottom"
+          >
+            <template
+              v-slot:activator="{ props }"
+            >
+              <v-btn
+                variant="text"
+                v-bind="props"
+              >{{ link.title }}</v-btn>
+            </template>
+
+            <v-list
+              v-for="(cLink, cKey) in link.children"
+              nav="true"
+              mandatory="false"
+              density="comfortable"
+              elevation="0"
+              :rounded="false"
+              class="rounded-0"
+            >
+              <v-list-item
+                rounded="false"
+                nav="true"
+                variant="flat"
+                :to="{
+                  name: link.routeName,
+                  params: {
+                    productType  :cLink.id
+                  }
+                }"
+              >{{ cLink.title }}</v-list-item>
+            </v-list>
+          </v-menu>
+        </template>
+
+        <template
+          v-else
+        >
+          <router-link
+            :to="{
+              name: link.routeName
+            }"
+            class="text-decoration-none text-dark"
+          >
+            <v-btn variant="text">
+              {{ link.title }}
+            </v-btn>
+          </router-link>
+        </template>
+      </template>
 
       <v-spacer></v-spacer>
 
@@ -35,73 +79,55 @@
         ></v-text-field>
       </v-responsive>
 
-      <v-avatar color="grey-darken-1" class="me-10 ms-4" size="32"></v-avatar>
+      <v-avatar color="grey-darken-1" class="me-10 ms-4 d-md-block d-none" size="32"></v-avatar>
     </v-container>
   </v-app-bar>
 
-  <v-navigation-drawer v-model="drawer" location="top" temporary>
-    <v-col>
+  <v-navigation-drawer 
+    class="d-md-block d-none"
+    v-model="drawer" 
+    location="top" 
+    temporary
+  >
+    <!-- <v-col>
       <router-link
         v-for="(link, idx) in links"
-        :to="link.url"
+        :to="{
+          name:link.name
+        }"
         :key="idx"
         class="text-decoration-none text-dark"
       >
         <v-btn variant="text">{{ link.title }}</v-btn>
       </router-link>
-    </v-col>
+    </v-col> -->
   </v-navigation-drawer>
 
-  <v-container fluid style="margin-top: 64px">
+  <v-container 
+    fluid
+    class="main-container p-md-3 p-4"
+  >
     <router-view />
   </v-container>
-  <!-- Comment -->
-  <!--
-  <v-main class="bg-grey-lighten-3">
-      <v-container fluid>
-        <v-row>
-          <v-col cols="2">
-            <v-sheet rounded="lg">
-              <v-list rounded="lg">
-                <v-list-item
-                  v-for="n in 5"
-                  :key="n"
-                  link
-                >
-                  <v-list-item-title>
-                    List Item {{ n }}
-                  </v-list-item-title>
-                </v-list-item>
-
-                <v-divider class="my-2"></v-divider>
-
-                <v-list-item
-                  link
-                  color="grey-lighten-4"
-                >
-                  <v-list-item-title>
-                    Refresh
-                  </v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-sheet>
-          </v-col>
-
-          <v-col>
-            <v-sheet
-              min-height="70vh"
-              rounded="lg"
-            >
-            </v-sheet>
-          </v-col>
-        </v-row>
-      </v-container>
-  </v-main>
-  -->
 </template>
+
+<style>
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (max-width: 767.99px) {
+  .main-container {
+    margin-top:0px;
+  }
+}
+@media only screen and (min-width: 768px) {
+  .main-container {
+    margin-top:64px;
+  }
+}
+</style>
 
 <script>
 import { isMobile } from "mobile-device-detect";
+import ProductCategoryEnum from "@/assets/js/enums/ProductCategoryEnum.js"
 
 export default {
   name: "Container",
@@ -113,20 +139,34 @@ export default {
       {
         title: "Home",
         routeName:"Home",
-        url: "/",
       },
       {
         title: "Products",
         routeName:"Products",
-        url: "products",
+      },
+      {
+        title: "Categories",
+        routeName: "ProductsType", 
+        children: []
       },
       {
         title: "Order",
         routeName:"Orders",
-        url: "orders",
       },
     ],
   }),
+  created() {
+    let productCategoryLink = this.links.find(l => l.routeName == "ProductsType");
+    let productCategories = [];
+
+    Object.keys(ProductCategoryEnum).forEach((v) => {
+      productCategories.push({
+        id:v,
+        title: ProductCategoryEnum[v]
+      });
+    });
+    productCategoryLink.children = productCategories;
+  },
   methods: {
     isMobileDevice() {
       return isMobile;

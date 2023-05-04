@@ -1,0 +1,40 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+$utilities: map-merge(
+  $utilities,
+  (
+    "font-size": map-merge(
+      map-get($utilities, "font-size"),
+    (responsive: true),
+    ),
+  )
+);
+
+
+$utilities: map-merge(
+    $utilities,
+    (
+        "font-size": map-merge(
+            map-get($utilities, "font-size"),
+            (
+                values: map-merge(
+                    map-get(
+                        map-get($utilities, "font-size"),
+                        "values"
+                    ),
+                    (
+                        7: ($font-size-base * 0.75),
+                        8: ($font-size-base * 0.5)
+                    )
+                )
+            )
+        )
+    )
+);
+
+@import "bootstrap/scss/utilities/api";
+@import 'bootstrap/scss/bootstrap';

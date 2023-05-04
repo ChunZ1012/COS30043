@@ -20,6 +20,7 @@
       }
     }"
   >
+
     <v-img height="250" cover aspect-ratio="1/1" :src="url">
       <template v-slot:placeholder>
         <div class="d-flex align-center justify-center fill-height">
@@ -36,7 +37,7 @@
         <h4 class="fw-bold text-truncate">{{ title }}</h4>
         <div class="d-flex flex-row align-items-center" v-if="discount">
           <del>
-            <span class="fs-6">RM {{ price }}</span>
+            <span class="fs-6">RM {{ price.toFixed(2) }}</span>
           </del>
           <span class="fs-5 ms-2" style="color: chocolate"
             >RM {{ (price - distAmt).toFixed(2) }}</span

@@ -27,16 +27,18 @@
   </v-row>
 
   <ProductsCarousel
-    v-for="(type, idx) in productTypes"
-    :key="idx"
+    v-for="(type, key) in productTypes"
+    :key="key"
     :products="getProductByCategory(type)"
-    :title="type"
+    :title="getProductCategoryTitle(type)"
+    :linkTo="type"
   ></ProductsCarousel>
 </template>
 
 <script>
 import ProductsCarousel from "@/views/misc/products/ProductsCarouselView.vue";
 import ProductData from '@/assets/data/Products.json';
+import ProductCategoryEnum from "@/assets/js/enums/ProductCategoryEnum.js"
 import SliderData from '@/assets/data/Sliders.json';
 
 export default {
@@ -59,6 +61,9 @@ export default {
         (p) => p.type.toLowerCase() == category.toLowerCase()
       );
     },
+    getProductCategoryTitle(category) {
+      return ProductCategoryEnum[category];
+    }
   },
   components: {
     ProductsCarousel,
