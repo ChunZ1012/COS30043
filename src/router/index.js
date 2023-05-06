@@ -34,11 +34,6 @@ const routes = [
             name:"Products",
             component: () => 
               import("@/views/misc/products/ProductListView.vue"),
-              props: {
-                breadcrumbTitle: "All Products",
-              },
-            sensitive:true,
-            strict:true
           },
           {
             path:"types/:productType",
@@ -46,8 +41,6 @@ const routes = [
             component: () => 
               import("@/views/misc/products/ProductListView.vue"),
             props:true,
-            strict:true,
-            sensitive:true
           }
         ]
       },
@@ -74,7 +67,13 @@ const routes = [
         component: () => 
           import("@/views/misc/orders/OrderDetailView.vue"),
         props: true
-      }
+      },
+      {
+        path:"carts",
+        name:"Carts",
+        component: () => 
+          import("@/views/misc/carts/CartListView.vue"),
+      },
     ],
   },
   {

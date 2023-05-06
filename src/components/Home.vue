@@ -51,7 +51,7 @@ export default {
   }),
   created() {
     this.sliders = SliderData;
-    this.products = ProductData;
+    this.products = ProductData.slice(0, 20);
     // Get distinct product type value from product list
     this.productTypes = new Set(this.products.map(p => p.type));
   },

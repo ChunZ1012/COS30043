@@ -110,10 +110,10 @@
                         >
                             <template v-slot:placeholder>
                                 <div class="d-flex align-center justify-center fill-height">
-                                <v-progress-circular
-                                    color="primary"
-                                    indeterminate
-                                ></v-progress-circular>
+                                    <v-progress-circular
+                                        color="primary"
+                                        indeterminate
+                                    ></v-progress-circular>
                                 </div>
                             </template>
                         </v-img>

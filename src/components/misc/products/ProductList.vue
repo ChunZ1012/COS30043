@@ -155,12 +155,12 @@ export default {
   props: {
     breadcrumbTitle: {
       type:String,
-      default:""
+      default:"All Products"
     },
     productType: {
       type:String,
-      default:""
-    }
+      default:undefined
+    },
   },
   data: () => ({
     // #############
@@ -198,21 +198,19 @@ export default {
       },
     ],
   }),
-  beforeRouteUpdate(to, from, next) {
-    console.log(to);
-    console.log(from);
-  },
   created() {
     this.initialize();
     // Watch route changes
     this.$watch(
       () => this.$route.params,
       (toParams, previousParams) => {
+        let params = undefined;
         if(Object.hasOwn(toParams, 'productType')) {
           if(Object.keys(ProductCategoryEnum).includes(toParams.productType)) {
-            this.initialize(toParams);
+            params = toParams;
           }
         }
+        this.initialize(params);
       }
     );
   },
@@ -222,19 +220,23 @@ export default {
       this.products = ProductData;
       // Get the default breadcrumb title (Use for All Product)
       let breadcrumbTitle = this.breadcrumbTitle;
-
-      // productCategory is passed by the router (Defined in @/router/index.js)
-      // Triggered when the user is landing on this page, without accessing to other
-      // category page before landing
+      // If the user do not navigate to other category page, and land on All Product page
+      let currentUrl = this.$route.path.split('/', 3);
+      if((toParams === undefined && this.productType == undefined) || (currentUrl.length > 2 && currentUrl[2] == 'all')) {
+        this.pType = 'all';
+      }
+      // productType is passed by the router (Defined in @/router/index.js)
       // If the user click on the other category page
-      if(toParams !== undefined) {
-        breadcrumbTitle = "";
+      else if(toParams !== undefined) {
         this.pType = toParams.productType;
       }
       else if(this.productType.length > 0) {
+        console.log(this.productType);
         this.pType = this.productType;
       }
-      console.log(toParams == undefined);
+
+      console.log('toParams null: ' + (toParams == undefined) + ', product type: ' + this.productType + ', pType: ' + this.pType);
+
       // if the breadcrumb title is empty
       // then we will set the title to based on the product type
       if(breadcrumbTitle.length <= 0 || this.pType != 'all') breadcrumbTitle = this.getProductCategoryTitle(this.pType);

@@ -1,0 +1,647 @@
+[
+    {
+      "cartId": 1,
+      "cartItems": [
+        {
+          "productId": 4,
+          "productName": "nulla do",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 3,
+          "productVariantType": "esse dolor",
+          "productVariantText": "duis quis esse",
+          "productVariantQty": 8,
+          "productVariantPrice": 101.6625,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 11.4425,
+          "productVariantAvailQty": 28,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 2,
+      "cartItems": [
+        {
+          "productId": 12,
+          "productName": "proident eiusmod laborum quis ipsum",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 2,
+          "productVariantType": "et",
+          "productVariantText": "in qui",
+          "productVariantQty": 7,
+          "productVariantPrice": 221.4197,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 4.0148,
+          "productVariantAvailQty": 25,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 3,
+      "cartItems": [
+        {
+          "productId": 6,
+          "productName": "culpa anim excepteur commodo",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 4,
+          "productVariantType": "ea nisi",
+          "productVariantText": "id nulla",
+          "productVariantQty": 7,
+          "productVariantPrice": 166.0267,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 17.4282,
+          "productVariantAvailQty": 25,
+          "productIsSelected": false
+        },
+        {
+          "productId": 6,
+          "productName": "in cupidatat",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 4,
+          "productVariantType": "in ad",
+          "productVariantText": "dolore voluptate",
+          "productVariantQty": 8,
+          "productVariantPrice": 142.4887,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 9.8978,
+          "productVariantAvailQty": 28,
+          "productIsSelected": false
+        },
+        {
+          "productId": 12,
+          "productName": "velit magna incididunt aliquip aute",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 4,
+          "productVariantType": "ea proident voluptate",
+          "productVariantText": "do exercitation sint",
+          "productVariantQty": 7,
+          "productVariantPrice": 67.4796,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 10.1925,
+          "productVariantAvailQty": 25,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 4,
+      "cartItems": [
+        {
+          "productId": 7,
+          "productName": "mollit",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 1,
+          "productVariantType": "Lorem aute",
+          "productVariantText": "voluptate laborum",
+          "productVariantQty": 2,
+          "productVariantPrice": 158.1755,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 8.7672,
+          "productVariantAvailQty": 7,
+          "productIsSelected": false
+        },
+        {
+          "productId": 14,
+          "productName": "quis commodo",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 4,
+          "productVariantType": "enim in deserunt",
+          "productVariantText": "do",
+          "productVariantQty": 2,
+          "productVariantPrice": 173.6787,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 4.0822,
+          "productVariantAvailQty": 7,
+          "productIsSelected": false
+        },
+        {
+          "productId": 5,
+          "productName": "et",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 1,
+          "productVariantType": "labore velit",
+          "productVariantText": "in elit",
+          "productVariantQty": 9,
+          "productVariantPrice": 132.9353,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 15.9345,
+          "productVariantAvailQty": 32,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 5,
+      "cartItems": [
+        {
+          "productId": 6,
+          "productName": "aute voluptate anim minim",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 2,
+          "productVariantType": "consectetur",
+          "productVariantText": "aute",
+          "productVariantQty": 4,
+          "productVariantPrice": 89.0065,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 15.917,
+          "productVariantAvailQty": 14,
+          "productIsSelected": false
+        },
+        {
+          "productId": 20,
+          "productName": "cupidatat non",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 4,
+          "productVariantType": "tempor",
+          "productVariantText": "nostrud reprehenderit",
+          "productVariantQty": 5,
+          "productVariantPrice": 40.152,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 16.0354,
+          "productVariantAvailQty": 18,
+          "productIsSelected": false
+        },
+        {
+          "productId": 9,
+          "productName": "quis ea dolore cillum",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 1,
+          "productVariantType": "ad laborum",
+          "productVariantText": "fugiat",
+          "productVariantQty": 7,
+          "productVariantPrice": 260.1776,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 15.8027,
+          "productVariantAvailQty": 25,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 6,
+      "cartItems": [
+        {
+          "productId": 1,
+          "productName": "enim",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 3,
+          "productVariantType": "incididunt exercitation enim",
+          "productVariantText": "sunt",
+          "productVariantQty": 4,
+          "productVariantPrice": 191.3317,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 17.7918,
+          "productVariantAvailQty": 14,
+          "productIsSelected": false
+        },
+        {
+          "productId": 13,
+          "productName": "minim ea in deserunt",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 3,
+          "productVariantType": "nisi",
+          "productVariantText": "ea id",
+          "productVariantQty": 2,
+          "productVariantPrice": 66.1947,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 13.238,
+          "productVariantAvailQty": 7,
+          "productIsSelected": false
+        },
+        {
+          "productId": 4,
+          "productName": "et fugiat excepteur",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 1,
+          "productVariantType": "in consectetur magna",
+          "productVariantText": "dolor",
+          "productVariantQty": 6,
+          "productVariantPrice": 197.7741,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 18.7607,
+          "productVariantAvailQty": 21,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 7,
+      "cartItems": [
+        {
+          "productId": 11,
+          "productName": "cupidatat",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 2,
+          "productVariantType": "in",
+          "productVariantText": "ex",
+          "productVariantQty": 3,
+          "productVariantPrice": 72.8463,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 16.89,
+          "productVariantAvailQty": 11,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 8,
+      "cartItems": [
+        {
+          "productId": 10,
+          "productName": "dolor est sint do",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 2,
+          "productVariantType": "culpa",
+          "productVariantText": "enim anim",
+          "productVariantQty": 1,
+          "productVariantPrice": 207.1574,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 10.9382,
+          "productVariantAvailQty": 4,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 9,
+      "cartItems": [
+        {
+          "productId": 12,
+          "productName": "veniam proident mollit proident anim",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 1,
+          "productVariantType": "irure",
+          "productVariantText": "deserunt",
+          "productVariantQty": 9,
+          "productVariantPrice": 144.1761,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 9.2474,
+          "productVariantAvailQty": 32,
+          "productIsSelected": false
+        },
+        {
+          "productId": 13,
+          "productName": "non nulla pariatur ullamco",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 3,
+          "productVariantType": "officia",
+          "productVariantText": "dolore",
+          "productVariantQty": 2,
+          "productVariantPrice": 24.8355,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 18.5032,
+          "productVariantAvailQty": 7,
+          "productIsSelected": false
+        },
+        {
+          "productId": 19,
+          "productName": "commodo ullamco",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 3,
+          "productVariantType": "eu amet",
+          "productVariantText": "cupidatat adipisicing qui",
+          "productVariantQty": 6,
+          "productVariantPrice": 17.9865,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 5.0627,
+          "productVariantAvailQty": 21,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 10,
+      "cartItems": [
+        {
+          "productId": 13,
+          "productName": "irure exercitation consectetur eiusmod",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 3,
+          "productVariantType": "dolore eiusmod officia",
+          "productVariantText": "ad",
+          "productVariantQty": 5,
+          "productVariantPrice": 71.7053,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 7.7254,
+          "productVariantAvailQty": 18,
+          "productIsSelected": false
+        },
+        {
+          "productId": 16,
+          "productName": "ipsum cillum eu nostrud ipsum",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 4,
+          "productVariantType": "adipisicing consectetur",
+          "productVariantText": "ullamco",
+          "productVariantQty": 8,
+          "productVariantPrice": 178.7217,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 10.8523,
+          "productVariantAvailQty": 28,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 11,
+      "cartItems": [
+        {
+          "productId": 5,
+          "productName": "deserunt proident",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 1,
+          "productVariantType": "laboris ut minim",
+          "productVariantText": "sunt enim",
+          "productVariantQty": 7,
+          "productVariantPrice": 131.2614,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 3.5598,
+          "productVariantAvailQty": 25,
+          "productIsSelected": false
+        },
+        {
+          "productId": 4,
+          "productName": "occaecat id elit aliquip",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 3,
+          "productVariantType": "nulla consequat",
+          "productVariantText": "irure adipisicing nostrud",
+          "productVariantQty": 8,
+          "productVariantPrice": 14.8258,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 3.219,
+          "productVariantAvailQty": 28,
+          "productIsSelected": false
+        },
+        {
+          "productId": 6,
+          "productName": "et ipsum magna",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 4,
+          "productVariantType": "id excepteur anim",
+          "productVariantText": "anim mollit",
+          "productVariantQty": 2,
+          "productVariantPrice": 25.391,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 15.8007,
+          "productVariantAvailQty": 7,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 12,
+      "cartItems": [
+        {
+          "productId": 1,
+          "productName": "dolore",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 1,
+          "productVariantType": "est aliquip reprehenderit",
+          "productVariantText": "non culpa",
+          "productVariantQty": 4,
+          "productVariantPrice": 5.5614,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 4.0331,
+          "productVariantAvailQty": 14,
+          "productIsSelected": false
+        },
+        {
+          "productId": 12,
+          "productName": "consectetur magna sint elit quis",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 2,
+          "productVariantType": "aute reprehenderit eiusmod",
+          "productVariantText": "eiusmod",
+          "productVariantQty": 1,
+          "productVariantPrice": 61.4225,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 5.7627,
+          "productVariantAvailQty": 4,
+          "productIsSelected": false
+        },
+        {
+          "productId": 14,
+          "productName": "ea quis adipisicing",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 1,
+          "productVariantType": "quis dolor anim",
+          "productVariantText": "commodo",
+          "productVariantQty": 2,
+          "productVariantPrice": 265.1828,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 3.3236,
+          "productVariantAvailQty": 7,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 13,
+      "cartItems": [
+        {
+          "productId": 13,
+          "productName": "incididunt sunt do",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 1,
+          "productVariantType": "qui deserunt",
+          "productVariantText": "non",
+          "productVariantQty": 3,
+          "productVariantPrice": 68.2288,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 3.8403,
+          "productVariantAvailQty": 11,
+          "productIsSelected": false
+        },
+        {
+          "productId": 16,
+          "productName": "anim sit veniam veniam",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 3,
+          "productVariantType": "sit est culpa",
+          "productVariantText": "eu",
+          "productVariantQty": 5,
+          "productVariantPrice": 19.0844,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 15.3677,
+          "productVariantAvailQty": 18,
+          "productIsSelected": false
+        },
+        {
+          "productId": 8,
+          "productName": "cupidatat",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 1,
+          "productVariantType": "eiusmod occaecat tempor",
+          "productVariantText": "quis non",
+          "productVariantQty": 9,
+          "productVariantPrice": 224.4046,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 15.9781,
+          "productVariantAvailQty": 32,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 14,
+      "cartItems": [
+        {
+          "productId": 20,
+          "productName": "incididunt dolore",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 2,
+          "productVariantType": "fugiat",
+          "productVariantText": "sunt voluptate",
+          "productVariantQty": 5,
+          "productVariantPrice": 123.2343,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 16.3035,
+          "productVariantAvailQty": 18,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 15,
+      "cartItems": [
+        {
+          "productId": 5,
+          "productName": "deserunt ut",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 4,
+          "productVariantType": "esse qui dolor",
+          "productVariantText": "Lorem cupidatat",
+          "productVariantQty": 8,
+          "productVariantPrice": 119.5115,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 2.0614,
+          "productVariantAvailQty": 28,
+          "productIsSelected": false
+        },
+        {
+          "productId": 5,
+          "productName": "sunt nulla",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 2,
+          "productVariantType": "aliqua est",
+          "productVariantText": "Lorem",
+          "productVariantQty": 9,
+          "productVariantPrice": 35.8961,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 14.1942,
+          "productVariantAvailQty": 32,
+          "productIsSelected": false
+        },
+        {
+          "productId": 5,
+          "productName": "commodo adipisicing nulla Lorem",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 4,
+          "productVariantType": "ex in nulla",
+          "productVariantText": "proident deserunt nisi",
+          "productVariantQty": 1,
+          "productVariantPrice": 71.0713,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 12.754,
+          "productVariantAvailQty": 4,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 16,
+      "cartItems": [
+        {
+          "productId": 4,
+          "productName": "dolor cupidatat voluptate consequat",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 4,
+          "productVariantType": "sint",
+          "productVariantText": "ullamco",
+          "productVariantQty": 7,
+          "productVariantPrice": 250.7993,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 4.2415,
+          "productVariantAvailQty": 25,
+          "productIsSelected": false
+        },
+        {
+          "productId": 19,
+          "productName": "do sint qui",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 4,
+          "productVariantType": "elit aute velit",
+          "productVariantText": "incididunt",
+          "productVariantQty": 1,
+          "productVariantPrice": 6.1163,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 6.3791,
+          "productVariantAvailQty": 4,
+          "productIsSelected": false
+        },
+        {
+          "productId": 1,
+          "productName": "eu ullamco",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 1,
+          "productVariantType": "eu",
+          "productVariantText": "enim mollit",
+          "productVariantQty": 4,
+          "productVariantPrice": 68.9373,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 2.6841,
+          "productVariantAvailQty": 14,
+          "productIsSelected": false
+        }
+      ]
+    },
+    {
+      "cartId": 17,
+      "cartItems": [
+        {
+          "productId": 7,
+          "productName": "voluptate qui sit adipisicing magna",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 3,
+          "productVariantType": "pariatur",
+          "productVariantText": "adipisicing",
+          "productVariantQty": 2,
+          "productVariantPrice": 8.2819,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 15.0305,
+          "productVariantAvailQty": 7,
+          "productIsSelected": false
+        },
+        {
+          "productId": 19,
+          "productName": "incididunt ut velit mollit",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 2,
+          "productVariantType": "in dolor",
+          "productVariantText": "nulla proident",
+          "productVariantQty": 6,
+          "productVariantPrice": 29.2787,
+          "productVariantDiscount": false,
+          "productVariantDiscountAmt": 15.5037,
+          "productVariantAvailQty": 21,
+          "productIsSelected": false
+        },
+        {
+          "productId": 11,
+          "productName": "labore sint aliqua anim",
+          "productImageUrl": "https://placehold.co/300",
+          "productVariantId": 4,
+          "productVariantType": "occaecat et aliqua",
+          "productVariantText": "in est officia",
+          "productVariantQty": 4,
+          "productVariantPrice": 163.4541,
+          "productVariantDiscount": true,
+          "productVariantDiscountAmt": 9.1371,
+          "productVariantAvailQty": 14,
+          "productIsSelected": false
+        }
+      ]
+    }
+  ]
