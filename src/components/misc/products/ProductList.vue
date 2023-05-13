@@ -1,7 +1,6 @@
 <template>
   <v-row>
     <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
-
     <v-spacer></v-spacer>
     <!-- Search field -->
     <v-col
@@ -23,86 +22,108 @@
   </v-row>
 
   <v-row>
-    <!-- Filtering panel -->
+    <!-- Filtering Panel -->
     <v-col
-      v-if="!isMobileDevice()"
+      class="d-lg-block d-none"
       cols="12"
       md="2"
     >
-      <v-card
-        variant="outlined"
-        rounded 
-        width="85%"
-      >
-        <!-- By Category Filtering -->
-        <v-card-item density="compact">
-          <p class="fs-5">By Category</p>
-
-          <v-checkbox
-            v-for="category in categories"
-            v-model="selectedCategory"
-            :label="category.title"
-            :value="category.name"
-            density="compact"
-            hide-details
-          >
-          </v-checkbox>
-        </v-card-item>
-
-        <div class="px-2">
-          <v-divider :thickness="3" class="mt-0"></v-divider>
-        </div>
-
-        <v-card-item density="compact">
-          <p class="fs-5">By Price</p>
-
-          <v-range-slider
-            v-model="priceRange"
-            strict
-            hide-details
-            :max="priceMax"
-            :min="0"
-            :steps="0.01"
-            density="compact"
-            thumb-size="12"
-          ></v-range-slider>
-
-          <v-row 
-            dense 
-            class="p-0"
-          >
-            <v-text-field
-              :model-value="priceRange[0].toFixed(2)"
-              hide-details
-              single-line
-              class="col-6"
-              type="number"
-              variant="flat"
-              density="compact"
-              @change="$set(priceRange, 0, $event)"
-            ></v-text-field>
-
-            <v-text-field
-              :model-value="priceRange[1].toFixed(2)"
-              hide-details
-              single-line
-              class="col-6"
-              type="number"
-              variant="flat"
-              density="compact"
-              @change="$set(priceRange, 1, $event)"
-            ></v-text-field>
-          </v-row>
-        </v-card-item>
-      </v-card>
+      <ProductListFilter
+        :priceRange="priceRange"
+        :categories="categories"
+        :priceMax="priceMax"
+        @onSelectedCategoryChange="onSelectedCategoryChange"
+        @onPriceRangeChange="onPriceRangeChange"
+      ></ProductListFilter>
     </v-col>
-
-    <!-- Product List -->
+    <!-- Container -->
     <v-col 
       cols="12" 
       md="10"
     >
       <h2>{{ breadcrumbs.length > 1 ? breadcrumbs[1] : "" }}</h2>
+
+      <div class="d-flex flex-row gap-2 align-items-center d-md-none"
+      >
+        <v-dialog
+          v-model="mobileFilterDialog"
+          width="auto"
+          class="pa-2"
+        >
+          <template v-slot:activator="{ props }"
+          >
+            <v-btn
+              class="ma-2"
+              color="gray-lighten-3"
+              variant="outlined"
+              v-bind="props"
+            >
+              <v-icon
+                start
+                size="large"
+                icon="mdi-filter-variant"
+              ></v-icon>
+              Filter
+            </v-btn>
+          </template>
+
+          <v-card>
+            <v-card-title>Filtering Panel</v-card-title>
+            <div class="px-2">
+              <v-divider :thickness="3" class="mt-0"></v-divider>
+            </div>
+            <ProductListFilter
+              :isMobile="true"
+              :showOutline="false"
+              :priceRange="priceRange"
+              :categories="categories"
+              :priceMax="priceMax"
+              @onSelectedCategoryChange="onSelectedCategoryChange"
+              @onPriceRangeChange="onPriceRangeChange"
+            ></ProductListFilter>
+
+            <v-card-actions
+              class="d-flex flex-row align-items-center justify-content-end"
+            >
+              <v-btn
+                class="ma-2"
+                color="gray-lighten-3"
+                variant="outlined"
+                @click="mobileFilterDialog = false"
+              >Close</v-btn>
+              <v-btn
+                class="ma-2"
+                color="gray-lighten-3"
+                variant="outlined"
+                @click="mobileFilterDialog = false"
+              >Apply</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
+
+      <!-- Sorting -->
+      <div 
+        class="d-flex flex-row col-md-4 col-12 py-2 my-2 gap-3 align-items-center"
+      >
+        <span
+          class="fs-6"
+        >Sort By: </span>
+        <v-select
+          v-model="selectedSort"
+          :items="sortOptions"
+          item-value="optionId"
+          item-title="optionText"
+          density="comfortable"
+          label="Select"
+          variant="outlined"
+          hide-details
+          return-object
+          single-line
+        ></v-select>
+        <v-spacer></v-spacer>
+      </div>
+      <!-- Product List -->
       <v-row class="mt-2">
         <v-col
           cols="12"
@@ -119,6 +140,8 @@
             :price="product.price"
             :discount="product.discount"
             :distAmt="product?.distAmt"
+            :showRating="true"
+            :rating="getProductAvgRating(product?.info)"
             :variableWidth="true"
           ></ProductCard>
         </v-col>
@@ -149,6 +172,7 @@ import { isMobile } from "mobile-device-detect";
 import ProductCard from "@/views/misc/products/ProductCardView.vue";
 import ProductData from '@/assets/data/Products.json';
 import ProductCategoryEnum from "@/assets/js/enums/ProductCategoryEnum.js"
+import ProductListFilter from "./ProductListFilter.vue";
 
 export default {
   name: "ProductList",
@@ -162,42 +186,69 @@ export default {
       default:undefined
     },
   },
-  data: () => ({
-    // #############
-    // Real
-    // #############
-    breadcrumbs: ["Home"],
-    pType: "all",
-    // Filter
-    textSearch: "",
-    selectedCategory: [],
-    priceMax: 9999.99,
-    priceRange: [0, 999],
-    // Pagination
-    currentPage: 1,
-    itemsPerPage: 12,
-    // Products Data
-    products: [],
-    filteredList: [],
-    categories: [
-      {
-        name: "pc",
-        title: "Phone Case",
+  data: function() {
+    return {
+      // #############
+      // Real
+      // #############
+      breadcrumbs: ["Home"],
+      pType: "all",
+      // Filter
+      mobileFilterDialog:false,
+      priceRangeTimeout:undefined,
+      textSearch: "",
+      selectedCategory: [],
+      priceMax: 9999.99,
+      priceRange: [0,  9999.99],
+      // Pagination
+      currentPage: 1,
+      itemsPerPage: 12,
+      // Products Data
+      products: [],
+      filteredList: [],
+      categories: [
+        {
+          name: "pc",
+          title: "Phone Case",
+        },
+        {
+          name: "sp",
+          title: "Screen Protector",
+        },
+        {
+          name: "ep",
+          title: "Earphones",
+        },
+        {
+          name: "hp",
+          title: "Headphones",
+        },
+      ],
+      //Sorting
+      selectedSort: {
+          optionId:1,
+          optionText: "Price: Low to High"
       },
-      {
-        name: "sp",
-        title: "Screen Protector",
-      },
-      {
-        name: "ep",
-        title: "Earphones",
-      },
-      {
-        name: "hp",
-        title: "Headphones",
-      },
-    ],
-  }),
+      sortOptions: [
+        {
+          optionId:1,
+          optionText: "Price: Low to High"
+        },
+        {
+          optionId:2,
+          optionText: "Price: High to Low"
+        },
+        {
+          optionId:3,
+          optionText: "Rating: Low to High"
+        },
+        {
+          optionId:4,
+          optionText: "Rating: High to Low"
+        }
+      ]
+    }
+  },
   created() {
     this.initialize();
     // Watch route changes
@@ -293,9 +344,46 @@ export default {
         return (finalPrice >= this.priceRange[0]) && (finalPrice <= this.priceRange[1]);
       });
 
+      switch(this.selectedSort.optionId) {
+        case 1:
+        case 2:
+          templist = templist.sort((a, b) =>  {
+            let ap = a.discount ? (a.price - a.distAmt) : a.price;
+            let bp = b.discount ? (b.price - b.distAmt) : b.price;
+
+            return this.selectedSort.optionId == 1 ? (ap - bp) : (bp - ap);
+          });
+          break;
+        case 3:
+        case 4:
+          templist = templist.sort((a, b) =>  {
+            let ar = a.info.reviews.reduce((total, r) => total + r.userRating, 0);
+            let br = b.info.reviews.reduce((total, r) => total + r.userRating, 0);
+
+            ar = ar / a.info.reviews.length;
+            br = br / b.info.reviews.length;
+
+            return this.selectedSort.optionId == 3 ? (ar - br) : (br - ar);
+          });
+          break;
+      }
+
       // Reset current page to 1
       this.currentPage = 1;
       this.filteredList = templist;
+    },
+    onSelectedCategoryChange(data) {
+      this.selectedCategory = data;
+    },
+    onPriceRangeChange(data) {
+      if(this.priceRangeTimeout !== undefined) clearTimeout(this.priceRangeTimeout);
+      this.priceRangeTimeout = setTimeout(() => {
+        this.priceRange = data;
+      }, 550);
+    },
+    getProductAvgRating(productInfo) {
+      let totalRating = productInfo.reviews.reduce((total, r) => total + r.userRating, 0);
+      return (totalRating / (productInfo.reviews.length)).toFixed(2);
     },
     getProductCategoryTitle(category) {
       return ProductCategoryEnum[category];
@@ -310,10 +398,14 @@ export default {
     },
     priceRange(){
       this.filterProducts();
+    },
+    selectedSort() {
+      this.filterProducts();
     }
   },
   components: {
     ProductCard,
+    ProductListFilter
   },
 };
 </script>

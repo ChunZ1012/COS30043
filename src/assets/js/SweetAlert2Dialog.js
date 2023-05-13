@@ -1,40 +1,53 @@
-function showDialog(title, desc) { 
-    if(this.isLoading) {
-        this.$swal({
-            title:title,
-            html:desc,
-            allowOutsideClick: !this.isLoading,
-            showCancelButton:false,
-            showConfirmButton:false,
-            didOpen:() => {
-                this.$swal.showLoading();
-            }
-        });
-    }
-    else {
-        this.$swal({
-            title:title,
-            html:desc,
-            allowOutsideClick: !this.isPersistent,
-            showCancelButton:!this.singleButtonOnly,
-            showConfirmButton:true,
-            confirmButtonText: this.confirmButtonText,
-            didClose:() => {
-                let type = this.confirmButtonAction.type;
-                if(type == 'route') {
-                    this.$router.push({
-                        name: this.confirmButtonAction.name
-                    })
-                }
-                else if(type == 'dialog') {
-                    this.$swal.close();
-                }
-            }
-        })
-    }
+import Swal from 'sweetalert2';
+
+export function useDialog(
+    title, description, showCancelButton = true
+){
+    const d = Swal.fire({
+        title:title,
+        html:description,
+        showCancelButton: showCancelButton
+    });
+
+    return d;
 }
 
-function dismissDialog() {
-    this.dialog = false;
-    this.$swal.close();
+export function useLoading(
+    title, description, didOpenFunc = () => {}, didCloseFunc = () => {}
+){
+    const d = Swal.fire({
+        title: title,
+        html: description,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+            didOpenFunc();
+        },
+        didClose: () => {
+            didCloseFunc();
+        }
+    });
+    return d;
+}
+
+export function useToast(
+    title, description, icon = 'success'
+) {
+    const d = Swal.fire({
+        title:title,
+        icon:icon,
+        html:description,
+        toast: true,
+        position:'top-right',
+        showConfirmButton:false,
+        timer:3000,
+        timerProgressBar: true
+    });
+
+    return d;
+}
+
+export function useCloseDialog() {
+    Swal.close();
 }

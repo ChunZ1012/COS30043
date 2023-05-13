@@ -48,6 +48,19 @@
           <span class="fs-5" color="white">RM {{ price.toFixed(2) }}</span>
         </div>
       </v-card-item>
+
+      <div
+        v-if="showRating"
+        class="d-flex flex-row align-items-center p-1 ms-2 m-1 text-dark"
+      >
+      <span class="fs-5 fw-bold">{{ rating }}</span>
+        <v-rating
+          :model-value="rating"
+          color="yellow-darken-2"
+          half-increments
+          density="compact"
+        ></v-rating>
+    </div>
     </v-hover>
   </v-card>
 </template>
@@ -79,6 +92,14 @@ export default {
     distAmt: {
       type:Number,
       default: 0
+    },
+    showRating:{
+      type:Boolean,
+      default:false
+    },
+    rating: {
+      type:Number,
+      default:-1
     },
     variableWidth: {
       type:Boolean,

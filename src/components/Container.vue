@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-md">
       <div class="container-fluid">
           <h4>BRANDING</h4>
           <button class="navbar-toggler"
@@ -25,28 +25,40 @@
                         class="nav-link dropdown-toggle" 
                         data-bs-toggle="dropdown"
                       >{{ link.title }}</a>
-                      <v-expand-transition>
-                        <ul
-                          class="dropdown-menu"
+                      <ul
+                        class="dropdown-menu"
+                      >
+                        <li
+                          v-for="(cLink, cKey) in link.children"
+                          class="nav-item"
+                          :key="cKey"
                         >
-                          <li
-                            v-for="(cLink, cKey) in link.children"
-                            class="nav-item"
-                            :key="cKey"
-                          >
-                            <router-link
-                              class="dropdown-item"
-                              :to="{
-                                name: link.routeName,
-                                params: {
-                                  productType: cLink.id 
-                                }
-                              }"
-                            >{{ cLink.title }}</router-link>
-                          </li>
-                        </ul>
-                      </v-expand-transition>
+                          <router-link
+                            class="dropdown-item"
+                            :to="{
+                              name: link.routeName,
+                              params: {
+                                productType: cLink.id 
+                              }
+                            }"
+                          >{{ cLink.title }}</router-link>
+                        </li>
+                      </ul>
                     </div>
+                  </template>
+                  <template
+                    v-else-if="link.onlyInMobile !== undefined && link.onlyInMobile"
+                  >
+                    <li
+                      class="nav-item d-block d-md-none">
+                      <router-link 
+                        :to="{
+                          name:link.routeName
+                        }"
+                        class="nav-link">
+                          {{ link.title }}
+                      </router-link>
+                    </li>
                   </template>
                   <li 
                     v-else
@@ -82,7 +94,7 @@
                 ></v-text-field>
               </form>
               <v-badge
-                :content="12"
+                :content="getCartCount"
                 class="d-none d-lg-inline-block"
               >
                 <router-link
@@ -109,114 +121,9 @@
           </div>
       </div>
   </nav>
-  <!--
-  <v-app-bar flat rounded dense>
-    <v-app-bar-nav-icon
-      class="d-block d-md-none"
-      variant="text"
-      @click.stop.prevent="drawer = !drawer"
-    >
-    </v-app-bar-nav-icon>
-
-    <v-container
-      class="fill-height d-md-flex d-none align-center"
-      fluid
-    >
-      <template
-        v-for="(link, key) in links"
-      >
-        <template
-          v-if="link.children !== undefined && link.children.length > 0"
-        >
-          <v-menu
-            location="bottom"
-          >
-            <template
-              v-slot:activator="{ props }"
-            >
-              <v-btn
-                variant="text"
-                v-bind="props"
-              >{{ link.title }}</v-btn>
-            </template>
-
-            <v-list
-              v-for="(cLink, cKey) in link.children"
-              nav="true"
-              mandatory="false"
-              density="comfortable"
-              elevation="0"
-              :rounded="false"
-              class="rounded-0"
-            >
-              <v-list-item
-                rounded="false"
-                nav="true"
-                variant="flat"
-                :to="{
-                  name: link.routeName,
-                  params: {
-                    productType:cLink.id
-                  }
-                }"
-              >{{ cLink.title }}</v-list-item>
-            </v-list>
-          </v-menu>
-        </template>
-
-        <template
-          v-else
-        >
-          <router-link
-            :to="{
-              name: link.routeName
-            }"
-            class="text-decoration-none text-dark"
-          >
-            <v-btn variant="text">
-              {{ link.title }}
-            </v-btn>
-          </router-link>
-        </template>
-      </template>
-
-      <v-spacer></v-spacer>
-
-      <v-responsive max-width="260">
-        <v-text-field
-          density="compact"
-          hide-details
-          variant="solo"
-        ></v-text-field>
-      </v-responsive>
-
-      <v-avatar color="grey-darken-1" class="me-10 ms-4 d-md-block d-none" size="32"></v-avatar>
-    </v-container>
-  </v-app-bar>
-
-  <v-navigation-drawer 
-    class="d-md-block d-none"
-    v-model="drawer" 
-    location="top" 
-    temporary
-  >
-     <v-col>
-      <router-link
-        v-for="(link, idx) in links"
-        :to="{
-          name:link.name
-        }"
-        :key="idx"
-        class="text-decoration-none text-dark"
-      >
-        <v-btn variant="text">{{ link.title }}</v-btn>
-      </router-link>
-    </v-col>
-  </v-navigation-drawer>
-  -->
   <v-container 
     fluid
-    class="p-md-2 p-1 mt-2"
+    class="p-md-2 p-2 mt-2"
   >
     <router-view />
   </v-container>
@@ -258,6 +165,7 @@
 
 <script>
 import { isMobile } from "mobile-device-detect";
+import { useToast } from "@/assets/js/SweetAlert2Dialog";
 import ProductCategoryEnum from "@/assets/js/enums/ProductCategoryEnum.js"
 
 export default {
@@ -283,6 +191,16 @@ export default {
         title: "Order",
         routeName:"Orders",
       },
+      {
+        title: "My Cart",
+        routeName: "Carts",
+        onlyInMobile:true
+      },
+      {
+        title: "My Account",
+        routeName: "Carts",
+        onlyInMobile:true
+      }
     ],
   }),
   created() {
@@ -296,11 +214,40 @@ export default {
       });
     });
     productCategoryLink.children = productCategories;
+
+    this.$store.commit('removeAllFromCart');
+    this.getUserCarts();
+  },
+  computed: {
+    getCartCount() {
+      return this.$store.getters.getCartsCount;
+    }
   },
   methods: {
     isMobileDevice() {
       return isMobile;
     },
+    getUserCarts() {
+      var requestOptions = {
+        method: 'GET',
+        redirect: 'follow'
+      };
+
+      fetch("http://localhost/COS30043/index.php/carts/list?limit=10", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          if(result.error) {
+            console.log(result.error);
+          }
+          else {
+            this.$store.commit('addAllToCart', result);
+          }
+        })
+        .catch(error => {
+          console.log('error', error);
+          useToast(error);
+        });
+    }
   },
 };
 </script>

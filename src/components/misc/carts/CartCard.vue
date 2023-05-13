@@ -2,16 +2,20 @@
     <v-card
         role="button"
         :elevation="0"
-        variant="plain"
+        :hover="true"
+        :loading="true"
+        variant="outlined"
         class="mx-auto pa-2 text-dark w-100"
         color="white"
         :key="cart.cartId"
+        v-if="cart.cartItems.length > 0"
     >
         <v-table>
             <thead>
                 <v-checkbox
                     v-model="isCheckAll"
                     label="Select All"
+                    @click="toggleCheckbox"
                 ></v-checkbox>
             </thead>
             <tr>
@@ -26,6 +30,12 @@
                             variant="plain"
                             class="mx-auto pa-2 text-dark w-100"
                             color="white"
+                            :to="{
+                                name:'ProductDetail',
+                                params: {
+                                    id: cartProduct.productId
+                                }
+                            }"
                         >
                             <v-row
                                 align="center"
@@ -33,13 +43,15 @@
                             >
                                 <v-col
                                     cols="auto"
-                                    class="p-0 ps-1 ps-md-0 p-md-3"
+                                    md="auto"
+                                    class="p-0 ps- p-md-3"
                                 >
                                     <v-checkbox
                                         class="col-auto text-dark"
-                                        v-model="isChecked[idx].checked"
-                                        :model-value="isChecked[idx].checked"
-                                        :disabled="isChecked[idx].disable"
+                                        v-model="cartProduct.isChecked"
+                                        :model-value="cartProduct.isChecked"
+                                        :disabled="cartProduct.isDisabled"
+                                        @click.stop.prevent="toggleCheckbox"
                                     ></v-checkbox>
                                 </v-col>
                                 <v-col
@@ -65,7 +77,8 @@
                                 
                                 <v-col
                                     cols="7"
-                                    md="9"
+                                    md="8"
+                                    lg="9"
                                     align-self="start"
                                 >
                                     <v-row>
@@ -101,17 +114,31 @@
                                             cols="12"
                                             align-self="end"
                                         >
-                                            <div class="d-flex flex-row align-items-center text-dark" v-if="cartProduct.productVariantDiscount">
+                                            <div class="d-flex flex-row col-12 align-items-center text-dark" v-if="cartProduct.productVariantDiscount">
                                                 <del>
                                                     <span class="fs-6">RM {{ cartProduct.productVariantPrice }}</span>
                                                 </del>
                                                 <span class="fs-5 ms-2" style="color: chocolate"
-                                                    >RM {{ (cartProduct.productVariantPrice - cartProduct.productVariantDiscountAmt).toFixed(2) }}</span
-                                                >
-                                                </div>
+                                                    >RM {{ (cartProduct.productVariantPrice - cartProduct.productVariantDiscountAmt).toFixed(2) }}
+                                                </span>
+                                                <v-spacer></v-spacer>
+                                                <v-icon
+                                                    icon="mdi-delete-forever"
+                                                    size="large"
+                                                    class="col-1 text-dark"
+                                                    @click.stop.prevent="removeCartItem(idx)"
+                                                ></v-icon>
+                                            </div>
 
-                                                <div class="d-flex flex-row align-items-center text-dark" v-else>
+                                            <div class="d-flex flex-row col-12 align-items-center text-dark" v-else>
                                                 <span class="fs-5" color="white">RM {{ cartProduct.productVariantPrice.toFixed(2) }}</span>
+                                                <v-spacer></v-spacer>
+                                                <v-icon
+                                                    icon="mdi-delete-forever"
+                                                    size="large"
+                                                    class="col-1 text-dark"
+                                                    @click.stop.prevent="removeCartItem(idx)"
+                                                ></v-icon>
                                             </div>
                                         </v-col>
                                     </v-row>
@@ -147,50 +174,47 @@ export default {
             isCheckAll:false,
             isChecked:[],
             selectedCartId: -1,
-            cartsQty:[],
             // ########
             // Rules
             // ########
             qtyRule(idx, max) {
                 return v => {
                     let isValid = !isNaN(v) && parseInt(Number(v)) == v && !isNaN(parseInt(v, 10)) && v > 0;
-                    
+                    let item = this.cart.cartItems[idx];
+                    let errMsg = "";
+
                     if(isValid) {
                         if(v > max) {
-                            this.isChecked[idx].checked = false;
-                            this.isChecked[idx].disable = true;
-                            return 'Exceed allowed value!'
+                            item.isChecked = false;
+                            item.isDisabled = true;
+                            errMsg = 'Exceed allowed value!'
                         }
-                        else this.isChecked[idx].disable = false;
+                        else item.isDisabled = false;
                     }
                     else {
-                        this.isChecked[idx].checked = false;
-                        this.isChecked[idx].disable = true;
-                        return 'Field is required!';
+                        item.isChecked = false;
+                        item.isDisabled = true;
+                        errMsg = 'Field is required!';
                     }
+
+                    return isValid ? (v <= max ? true : errMsg) : errMsg;
                 }
             }
         }
     },
     created() {
-        // this.isChecked = Array(this.cart.cartItems.length).fill(false);
         this.cart.cartItems.forEach(c => {
-            c.checked = false;
-            let cartQty = {
-                cartId: c.cartId,
-                productId: c.productId,
-                productVariantId: c.productVariantId,
-                productVariantQty: c.productVariantQty
-            }
-            this.cartsQty.push(cartQty);
+            c.isChecked = false;
+            c.isDisabled = false;
 
-            let cartCheckbox = {
+            this.isChecked.push({
                 checked: false,
-                disable: false
-            };
-
-            this.isChecked.push(cartCheckbox);
+                disable:false
+            });
         });
+    },
+    mounted() {
+        
     },
     computed: {
         isMobileDevice() {
@@ -200,6 +224,9 @@ export default {
             return this.isChecked.map((c, idx) => {
                 return { id:idx, value:c.checked };
             });
+        },
+        toggleCheckbox() {
+            this.$emit('clickItem');
         }
     },
     methods: {
@@ -214,66 +241,26 @@ export default {
 
             this.cart.cartItems[idx].productVariantQty += qty;
         },
+        removeCartItem(idx) {
+            if(confirm("Are you sure to remove the item?")) {
+                this.$store.commit('removeFromCart', {
+                    productId: this.cart.cartItems[idx].productId,
+                    productVariantId: this.cart.cartItems[idx].productVariantId,
+                });
+            }
+        }
     },
     watch: {
         isMobile() {
             console.log("now: " + isMobile);
         },
         isCheckAll(newValue) {
-            this.isChecked.forEach((a, i, t) => t[i].checked = t[i].disable ? false : newValue);
+            this.cart.cartItems.forEach((a, i, t) => t[i].isChecked = t[i].isDisabled ? false : newValue);
             this.$emit('clickAll', {
                 cartId: this.cart.cartId,
                 value: newValue
             });
         },
-        isSelected(newVal, oldVal) {
-            let totalPrice = 0;
-
-            if(newVal != undefined && newVal.length > 0) {
-                newVal.forEach((i, idx) => {
-                    let item = this.cart.cartItems[i.id];
-
-                    let qty = item.productVariantQty;
-                    let hasDiscount = item.productVariantDiscount;
-
-                    if(i.value && oldVal != undefined && oldVal.length > 0 && !oldVal[idx].value) {
-                        totalPrice += (item.productVariantPrice * qty);
-                        if(hasDiscount) {
-                            totalPrice -= (item.productVariantDiscountAmt * qty);
-                        }
-                    }
-                    else if(!i.value) {
-                        totalPrice -= (item.productVariantPrice * qty);
-                        if(hasDiscount) {
-                            totalPrice += (item.productVariantDiscountAmt * qty);
-                        }
-                    }
-                });
-
-                this.$emit('clickItem', {
-                    cartId: this.cart.cartId,
-                    value: totalPrice
-                });
-            }
-        },
-        isChecked: {
-            handler(val, oldVal) {
-                let totalPrice = 0;
-                this.cart.cartItems.forEach((item, idx) => {
-                    let isChecked = this.isChecked[idx].disable ? false : this.isChecked[idx].checked;
-
-                    if(isChecked) {
-                        totalPrice += 0;
-                    }
-                });
-
-                // this.$emit('clickItem', {
-                //     cartId: this.cart.cartId,
-                //     value: val
-                // });
-            },
-            deep:true
-        }
     }
 }
 </script>

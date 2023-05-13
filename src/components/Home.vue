@@ -6,7 +6,11 @@
       class="w-100 mx-auto mb-3"
       height="500"
     >
-      <v-carousel hide-delimiter-background show-arrows cycle>
+      <v-carousel 
+        hide-delimiter-background 
+        show-arrows="hover"
+        cycle
+      >
         <v-carousel-item
           v-for="(slider, i) in sliders"
           :key="i"
@@ -51,7 +55,7 @@ export default {
   }),
   created() {
     this.sliders = SliderData;
-    this.products = ProductData.slice(0, 20);
+    this.products = ProductData;
     // Get distinct product type value from product list
     this.productTypes = new Set(this.products.map(p => p.type));
   },

@@ -4,16 +4,14 @@ import router from "./router";
 import vuetify from "./plugins/vuetify";
 import { loadFonts } from "./plugins/webfontloader";
 
+import VuexCarts from '@/stores/Carts';
+
 import { createVuetify } from "vuetify";
 import colors from "vuetify/lib/util/colors.mjs";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap";
 import "@/assets/css/custom.scss";
-
-import VueSweetalert2 from "vue-sweetalert2";
-import '@sweetalert2/theme-material-ui/material-ui.min.css';
-
 
 loadFonts();
 /*
@@ -42,5 +40,5 @@ const sw2Theme = {
 createApp(App)
     .use(router)
     .use(vuetify)
-    .use(VueSweetalert2)
+    .use(VuexCarts)
     .mount("#app");

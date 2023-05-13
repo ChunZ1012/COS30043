@@ -69,6 +69,11 @@
                     v-if="product.info.variant || product.info.variant.length > 0"
                     :label="product.info.variant.type"
                     :items="product.info.variant.values"
+                    item-value="variantId"
+                    item-title="variantValue"
+                    return-object
+                    hide-details
+                    single-line
                     :rules="variantRule"
                     v-model="selectedVariant"
                     required
@@ -112,6 +117,8 @@
                             variant="outlined"
                             type="submit"
                             block
+                            @click.stop.prevent="addToCart"
+                            :disabled="!buttonEnabled"
                         >Add to Cart</v-btn>
                     </v-col>
                     <!-- Buy Now -->
@@ -123,6 +130,7 @@
                             variant="outlined"
                             type="submit"
                             block
+                            :disabled="!buttonEnabled"
                         >Buy Now</v-btn>
                     </v-col>
                 </v-row>
@@ -137,6 +145,7 @@
     >
         <v-card
             flat="true"
+            class="w-100"
         >
             <v-tabs
                 bg-color="transparent"
@@ -147,7 +156,9 @@
                 <v-tab value="rating">Rating</v-tab>
             </v-tabs>
 
-            <v-card-text>
+            <v-card-text
+                class="w-100 pa-4"
+            >
                 <v-window 
                     v-model="currentTab"
                 >
@@ -155,23 +166,72 @@
                         value="description"
                     >
                         <p>{{ product.info.description }}</p>
+
                     </v-window-item>
+                    <!-- Rating -->
                     <v-window-item
                         value="rating"
-                        width="95%"
                     >
-                        <StarRating
-                            :max-rating="5"
-                            :increment="0.1"
-                            :rating="product.info.overallRating"
-                            :read-only="true"
-                            :star-size="30"
-                            :animate="false"
-                        ></StarRating>
+                        <v-card
+                            class="d-flex flex-column mx-auto p-4"
+                            elevation="2"
+                        >
+                            <p class="fs-3 fw-bold">Rating Overview</p>
+                            <div
+                                class="d-flex align-center flex-column my-auto"
+                            >
+                                <div 
+                                    class="fs-1 mt-md-4 mt-2 fw-bold"
+                                >
+                                    {{ getAvgRating }}
+                                    <span class="fs-5 ml-md-n3 ml-n2 fw-normal">/5</span>
+                                </div>
 
-                        <v-spacer class="mt-4"></v-spacer>
+                                <v-rating
+                                    :model-value="getAvgRating"
+                                    color="yellow-darken-2"
+                                    half-increments
+                                ></v-rating>
+                                <div class="px-3">{{ getTotalReviewsCount }} ratings</div>
+                            </div>
 
-                        <div>
+                            <v-list
+                                bg-color="transparent"
+                                class="d-flex flex-column-reverse"
+                                density="comfortable"
+                            >
+                                <v-list-item
+                                    v-for="(rating, idx) in 5"
+                                    :key="i"
+                                >
+                                    <v-progress-linear
+                                        :model-value="calculateRatingBarValueBasedOnRating(rating) * 100"
+                                        class="mx-n5"
+                                        color="yellow-darken-2"
+                                        height="21"
+                                        rounded
+                                    ></v-progress-linear>
+
+                                    <template v-slot:prepend>
+                                        <span>{{ rating }}</span>
+                                        <v-icon 
+                                            icon="mdi-star"
+                                            class="mx-4"
+                                        ></v-icon>
+                                    </template>
+                                    <template v-slot:append>
+                                        <div class="rating-values">
+                                            <span class="d-flex justify-end"> {{ getTotalReviewsCountBasedOnRating(rating) }} </span>
+                                        </div>
+                                    </template>
+                                </v-list-item>
+                            </v-list>
+                        </v-card>
+
+                        <div
+                            class="mt-4 pt-3"
+                        >
+                            <p class="fs-2 fw-bold">Review(s)</p>
                             <ProductReviewView
                                 v-for="review in getCurrentReviews"
                                 :userAvatarUrl="review.userAvatarUrl"
@@ -204,12 +264,19 @@
     ></Dialog>
 </template>
 
+<style>
+.rating-container {
+    width:90%;
+    height: fit-content;
+}
+</style>
+
 <script>
 import { isMobile } from "mobile-device-detect";
+import { useLoading, useToast, useCloseDialog, useDialog } from '@/assets/js/SweetAlert2Dialog';
 import ProductData from '@/assets/data/Products.json';
 import Dialog from '@/components/misc/dialogs/Dialog.vue';
 import ProductReviewView from '@/views/misc/products/ProductReviewView.vue';
-import StarRating from 'vue-star-rating';
 
 export default {
     name: "ProductDetail",
@@ -223,19 +290,32 @@ export default {
        return {
             // Rules
             variantRule: [
-                (v) => !!v || "Please select at least one variant!"
+                (v) => {
+                    this.buttonEnabled = !!v;
+                    return !!v || "Please select at least one variant!"
+                }
             ],
             qtyRule: [
-                (v) => !!v || "Please enter a number larger than 0!",
-                (v) => v > 0 || "Please enter a number larger than 0!",
-                (v) => v <= this.product.info.availQty || "Invalid!"
+                (v) => {
+                    this.buttonEnabled = !!v;
+                    return !!v || "Please enter a number larger than 0!"
+                },
+                (v) => {
+                    this.buttonEnabled = !!v;
+                    return v > 0 || "Please enter a number larger than 0!"
+                },
+                (v) => {
+                    this.buttonEnabled = !!v;
+                    return v <= this.product.info.availQty || "Invalid!"
+                }
             ],
             // #############
             // Real
             // #############
             breadcrumbs: ["Home", "Product"],
             product: undefined,
-            selectedVariant:"",
+            selectedVariant: {},
+            buttonEnabled: true,
             orderQty: 1,
             valid:true,
             currentTab:"",
@@ -262,12 +342,20 @@ export default {
         else {
             // Pushing the vue props to the breadcrumbs list
             this.breadcrumbs.push(this.product.title);
+            // Set initial variant value
+            this.selectedVariant = this.product.info.variant.values[0];
         }
-        this.promptDialog("123", "123");
     },
     computed:{
         isMobileDevice() {
             return isMobile;
+        },
+        getTotalReviewsCount(){
+            return this.product.info.reviews.length;
+        },
+        getAvgRating(){
+            let totalReviews = this.product.info.reviews.reduce((total, review) =>  total + parseFloat(review.userRating), 0);
+            return (totalReviews / this.getTotalReviewsCount).toFixed(2);
         },
         getCurrentReviews() {
             let start = (this.currentPage - 1);
@@ -275,8 +363,27 @@ export default {
         }
     },
     methods: {
+        calculateRatingBarValueBasedOnRating(rating){
+            let totalRating = this.getTotalReviewsCountBasedOnRating(rating);
+            return (totalRating / this.getTotalReviewsCount).toFixed(2);
+        },
+        getTotalReviewsCountBasedOnRating(rating){
+            let totalRating = this.product.info.reviews.filter(r => r.userRating == rating).length;
+            return totalRating;
+        },  
         promptDialog(title, description) {
             this.$refs.productDialog.showDialog(title, description)
+        },
+        addToCart() {
+            useLoading("Loading...");
+            setTimeout(() => {
+                this.$store.commit('addToCart', {
+                    productId:this.product.id,
+                    productVariantId: this.selectedVariant.variantId,
+                    productVariantQty: this.orderQty
+                });
+                useToast("Successfully Added");
+            }, 1000);
         }
     },
     watch: {
@@ -284,7 +391,6 @@ export default {
     },
     components: {
         Dialog,
-        StarRating,
         ProductReviewView
     }
 };

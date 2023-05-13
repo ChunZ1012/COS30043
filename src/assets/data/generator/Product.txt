@@ -47,15 +47,30 @@
         },
         values: [
           '{{repeat(integer(2, 6))}}',
-          '{{lorem(integer(1, 3), "words")}}'
+          {
+            variantId: function() {
+              var id = localStorage.getItem('variantId');
+              if(id === null) id = 1;
+              
+              id = (parseInt(id, 10)) + 1;
+              
+              localStorage.setItem('variantId', id);
+              
+              return id;
+            },
+            variantValue: '{{lorem(integer(1, 3), "words")}}'
+          }
         ]
       },
       reviews: [
-        '{{repeat(1, 20)}}',
+        '{{repeat(1, 25)}}',
         {
           userAvatarUrl:'https://via.placeholder.com/64x64',
           userDisplayName:'{{firstName()}} {{surname()}}',
-          userRating:'{{floating(1, 5, 2, "0.00")}}',
+          userRating:function() {
+            var r = Math.round(Math.random() * 4) + 1;
+            return r;
+          },
           userComment:'{{lorem(integer(1, 4), "sentences")}}',
           userCommentTime:'{{date(new Date(2018, 06, 16), new Date(), "dd/MM/YYYY")}}'
         }

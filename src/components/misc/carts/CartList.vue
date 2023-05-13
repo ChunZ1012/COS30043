@@ -27,13 +27,24 @@
             <v-card
                 :elevation="8"
             >
-                <v-card-text
-                    class="float-right"
-                >
+                <div
+                    class="d-flex flex-row float-right align-items-center m-2 p-2 gap-3"
+                >                   
+                    <v-slide-x-reverse-transition
+                        group="true"
+                        hide-on-leave="true"
+                    >
                     <span
                         class="fs-4 fw-bold"
                     >Total Price: RM{{ totalPrice.toFixed(2) }}</span>
-                </v-card-text>
+ 
+                        <v-btn
+                            v-if="showCheckoutButton"
+                            variant="outlined"
+                            color="orange"
+                        >Checkout</v-btn>
+                    </v-slide-x-reverse-transition>
+                </div>
             </v-card>
         </div>
     </div>
@@ -48,6 +59,7 @@
 <script>
 import CartCard from "@/views/misc/carts/CartCardView.vue";
 import CartData from '@/assets/data/Carts.json';
+import ProductData from '@/assets/data/Products.json';
 
 export default {
     name:"OrderList",
@@ -65,26 +77,87 @@ export default {
             breadcrumbs: ["Home", "Cart"],
             carts:[],
             totalPrice:0,
-            isFullyLoaded: false
+            isFullyLoaded: false,
+            // Checkout
+            showCheckoutButton:false
         }
     },
-    created() {
-        this.carts = CartData;
-    },
+    created() {},
     mounted() {
         window.addEventListener('load', () => {
             this.isFullyLoaded = true;
-        })
+        });
+        this.getCarts;
+    },
+    computed: {
+        getCarts() {
+            // FIXME: Modify the below line to match with th api in future
+            let carts = this.$store.getters.getCarts.map(c => {
+                return { 
+                    productId: c.productId,
+                    productVariantId: c.productVariantId,
+                    productVariantQty: c.productVariantQty
+                }
+            });
+            ProductData.forEach((p, idx) => {
+                if(carts.map(c => c.productId).includes(p.id)) {
+                    p.info.variant.values.forEach(v => {
+                        if(carts.map(c => c.productVariantId).includes(v.variantId)) {
+                            this.carts.push({
+                                cartId: idx,
+                                cartItems:[
+                                    {
+                                        productId: p.id,
+                                        productName: p.title,
+                                        productImageUrl: p.url,
+                                        productVariantId: v.variantId,
+                                        productVariantText: v.variantValue,
+                                        productVariantQty: 6,
+                                        productVariantPrice: p.price,
+                                        productVariantDiscount: p.discount,
+                                        productVariantDiscountAmt: p.distAmt
+                                    }
+                                ]
+                            });
+                        }
+                    });
+                }
+            });
+            // CartData.forEach(cd => {
+            //     cd.cartItems.forEach(ci => {
+            //         console.log(ci.productId + ":" + ci.productVariantId);
+            //         if(carts.map(c => c.productId).includes(ci.productId) && carts.map(c => c.productVariantId).includes(ci.productVariantId)) {
+            //             this.carts.push(cd);
+            //             console.log(cd);
+            //         }
+            //     })
+            // })
+            // return this.carts;
+        }
     },
     methods: {
-        onAllClick(data) {
-            //console.log('onClickAll ' + data.cartId + ", " + data.value);
-        },
-        onItemClick(data) {
-            if(this.isFullyLoaded) {
-                this.totalPrice += data.value;
-                console.log(this.carts[0].cartItems[0].productVariantQty);
-            }
+        onItemClick() {
+            let totalPrice = 0;
+            let checkedCount = 0;
+
+            this.carts.forEach(c => {
+                c.cartItems.forEach(i => {
+                    if(i.isChecked) {
+                        checkedCount += 1;
+                        let qty = i.productVariantQty;
+                        totalPrice += i.productVariantPrice * qty;
+
+                        if(i.productVariantDiscount) {
+                            totalPrice -= i.productVariantDiscountAmt * qty;
+                        }
+                        else {
+                            totalPrice += i.productVariantDiscountAmt * qty;
+                        }
+                    }
+                });
+            });
+            this.totalPrice = totalPrice;
+            this.showCheckoutButton = checkedCount > 0;
         }
     },
     components: {
