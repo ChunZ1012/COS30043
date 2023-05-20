@@ -1,5 +1,5 @@
 <template>
-    <OrderDetail />
+  <OrderDetail />
 </template>
 
 <script>
@@ -9,11 +9,10 @@ import { defineComponent } from "vue";
 import OrderDetail from "@/components/misc/orders/OrderDetail.vue";
 
 export default defineComponent({
-    name: "OrderDetailView",
+  name: "OrderDetailView",
 
-    components: {
-        OrderDetail,
-    },
+  components: {
+    OrderDetail,
+  },
 });
 </script>
-  

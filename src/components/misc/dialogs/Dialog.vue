@@ -54,8 +54,8 @@
 -->
 <script>
 export default {
-    name: "Dialog",
-    /*
+  name: "Dialog",
+  /*
     props: {
         isPersistent: {
             type:Boolean,
@@ -95,51 +95,48 @@ export default {
         }
     },
     */
-    methods: {
-        showDialog(title, desc) {
-            let dTitle = (title !== undefined && title.length > 0) ? title : this.title;
-            let dDesc = (desc !== undefined && desc.length > 0) ? desc : this.desc;
+  methods: {
+    showDialog(title, desc) {
+      let dTitle = title !== undefined && title.length > 0 ? title : this.title;
+      let dDesc = desc !== undefined && desc.length > 0 ? desc : this.desc;
 
-            if(this.isLoading) {
-                this.$swal({
-                    title:dTitle,
-                    html:dDesc,
-                    allowOutsideClick: !this.isLoading,
-                    showCancelButton:false,
-                    showConfirmButton:false,
-                    didOpen:() => {
-                        this.$swal.showLoading();
-                    }
-                });
+      if (this.isLoading) {
+        this.$swal({
+          title: dTitle,
+          html: dDesc,
+          allowOutsideClick: !this.isLoading,
+          showCancelButton: false,
+          showConfirmButton: false,
+          didOpen: () => {
+            this.$swal.showLoading();
+          },
+        });
+      } else {
+        this.$swal({
+          title: title,
+          html: desc,
+          allowOutsideClick: !this.isPersistent,
+          showCancelButton: !this.singleButtonOnly,
+          showConfirmButton: true,
+          confirmButtonText: this.confirmButtonText,
+          didClose: () => {
+            let type = this.confirmButtonAction.type;
+            if (type == "route") {
+              this.$router.push({
+                name: this.confirmButtonAction.name,
+              });
+            } else if (type == "dialog") {
+              this.$swal.close();
             }
-            else {
-                this.$swal({
-                    title:title,
-                    html:desc,
-                    allowOutsideClick: !this.isPersistent,
-                    showCancelButton:!this.singleButtonOnly,
-                    showConfirmButton:true,
-                    confirmButtonText: this.confirmButtonText,
-                    didClose:() => {
-                        let type = this.confirmButtonAction.type;
-                        if(type == 'route') {
-                            this.$router.push({
-                                name: this.confirmButtonAction.name
-                            })
-                        }
-                        else if(type == 'dialog') {
-                            this.$swal.close();
-                        }
-                    }
-                })
-            }
-        },
-        dismissDialog() {
-            this.dialog = false;
-            this.$swal.close();
-        }
+          },
+        });
+      }
     },
-    expose:['showDialog', 'dismissDialog', 'title', 'desc', 'dialog']
+    dismissDialog() {
+      this.dialog = false;
+      this.$swal.close();
+    },
+  },
+  expose: ["showDialog", "dismissDialog", "title", "desc", "dialog"],
 };
 </script>
-  

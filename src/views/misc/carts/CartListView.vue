@@ -1,5 +1,5 @@
 <template>
-    <CartList></CartList>
+  <CartList></CartList>
 </template>
 
 <script>
@@ -9,11 +9,10 @@ import { defineComponent } from "vue";
 import CartList from "@/components/misc/carts/CartList.vue";
 
 export default defineComponent({
-    name: "CartListView",
+  name: "CartListView",
 
-    components: {
-        CartList,
-    },
+  components: {
+    CartList,
+  },
 });
 </script>
-  

@@ -1,8 +1,6 @@
 <template>
   <!-- Products Carousel Header -->
-  <div 
-    class="d-flex flex-row mt-4 mb-1 align-items-center"
-  >
+  <div class="d-flex flex-row mt-4 mb-1 align-items-center">
     <h2 class="fw-bold">{{ title }}</h2>
     <p class="fs-5" v-if="description === undefined || description.length <= 0">
       {{ description }}
@@ -11,17 +9,17 @@
     <v-btn
       variant="text"
       :to="{
-        name:'ProductsType',
+        name: 'ProductsType',
         params: {
-          productType:linkTo
-        }
+          productType: linkTo,
+        },
       }"
     >
       <template v-slot:prepend>
-        <v-icon
-          icon="mdi-arrow-right"></v-icon>
+        <v-icon icon="mdi-arrow-right"></v-icon>
       </template>
-      View More</v-btn>
+      View More</v-btn
+    >
   </div>
   <!-- Products Carousel -->
   <v-slide-group
@@ -35,12 +33,13 @@
     <v-slider-group-item v-for="(product, idx) in products" :key="idx">
       <v-col cols="12" class="my-2">
         <ProductCard
-          :pid="product.id"
-          :title="product.title"
-          :url="product.url"
-          :price="product.price"
-          :discount="product.discount"
-          :distAmt="product?.distAmt"
+          :pid="product?.productId"
+          :title="product?.productTitle"
+          :url="product?.productImageUrl"
+          :hoverUrl="product?.productImageHoverUrl"
+          :price="product?.productPrice"
+          :discount="product?.productDist"
+          :distAmt="product?.productDistAmt"
         ></ProductCard>
       </v-col>
     </v-slider-group-item>
@@ -55,23 +54,23 @@ export default {
   name: "ProductsCarousel",
   props: {
     title: {
-      type:String,
-      default:""
+      type: String,
+      default: "",
     },
     description: {
-      type:String,
-      default:""
+      type: String,
+      default: "",
     },
     linkTo: {
-      type:String,
-      default:""
+      type: String,
+      default: "",
     },
     products: [],
   },
   methods: {
     isMobileDevice() {
       return isMobile;
-    }
+    },
   },
   components: {
     ProductCard,

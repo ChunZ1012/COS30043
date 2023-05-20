@@ -1,5 +1,5 @@
 <template>
-    <OrderCard />
+  <OrderCard />
 </template>
 
 <script>
@@ -9,11 +9,10 @@ import { defineComponent } from "vue";
 import OrderCard from "@/components/misc/orders/OrderCard.vue";
 
 export default defineComponent({
-    name: "OrderCardView",
+  name: "OrderCardView",
 
-    components: {
-        OrderCard,
-    },
+  components: {
+    OrderCard,
+  },
 });
 </script>
-  

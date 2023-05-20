@@ -1,5 +1,5 @@
 <template>
-    <OrderList />
+  <OrderList />
 </template>
 
 <script>
@@ -9,11 +9,10 @@ import { defineComponent } from "vue";
 import OrderList from "@/components/misc/orders/OrderList.vue";
 
 export default defineComponent({
-    name: "OrderListView",
+  name: "OrderListView",
 
-    components: {
-        OrderList,
-    },
+  components: {
+    OrderList,
+  },
 });
 </script>
-  

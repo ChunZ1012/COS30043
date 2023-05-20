@@ -1,5 +1,5 @@
 <template>
-    <CartCard></CartCard>
+  <CartCard></CartCard>
 </template>
 
 <script>
@@ -9,11 +9,10 @@ import { defineComponent } from "vue";
 import CartCard from "@/components/misc/carts/CartCard.vue";
 
 export default defineComponent({
-    name: "CartCardView",
+  name: "CartCardView",
 
-    components: {
-        CartCard,
-    },
+  components: {
+    CartCard,
+  },
 });
 </script>
-  

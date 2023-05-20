@@ -4,75 +4,79 @@ const routes = [
   {
     path: "/login",
     name: "Login",
-    component: () => 
-      import("@/views/LoginView.vue"),
+    component: () => import("@/views/LoginView.vue"),
   },
   {
     path: "/register",
     name: "Register",
-    component: () => 
-      import("@/views/RegisterView.vue"),
+    component: () => import("@/views/RegisterView.vue"),
   },
   {
     path: "/",
     name: "Container",
-    component: () => 
-      import("@/views/ContainerView.vue"),
+    component: () => import("@/views/ContainerView.vue"),
     children: [
       {
         path: "",
         name: "Home",
-        component: () => 
-          import("@/views/HomeView.vue"),
+        component: () => import("@/views/HomeView.vue"),
       },
       {
         path: "products",
         name: "ProductsContainer",
         children: [
           {
-            path:"all",
-            name:"Products",
-            component: () => 
+            path: "all",
+            name: "Products",
+            component: () =>
               import("@/views/misc/products/ProductListView.vue"),
+            redirect: {
+                name:'ProductsType',
+                params: {
+                  productType:'all'
+                }
+            }
           },
           {
-            path:"types/:productType",
-            name:"ProductsType",
-            component: () => 
+            path: "types/:productType",
+            name: "ProductsType",
+            component: () =>
               import("@/views/misc/products/ProductListView.vue"),
-            props:true,
-          }
-        ]
+            props: true,
+          },
+        ],
       },
       {
         path: "products/view/:id",
         name: "ProductDetail",
-        component: () => 
-          import("@/views/misc/products/ProductDetailView.vue"),
-        props:true
+        component: () => import("@/views/misc/products/ProductDetailView.vue"),
+        props: true,
       },
       {
         path: "orders",
         name: "Orders",
-        component: () => 
-          import("@/views/misc/orders/OrderListView.vue"),
+        component: () => import("@/views/misc/orders/OrderListView.vue"),
         // alias: ['/orders/view'],
         props: {
           breadcrumbTitle: "All Orders",
         },
       },
       {
-        path: "orders/view/:orderId",
-        name: "OrderDetail",
-        component: () => 
-          import("@/views/misc/orders/OrderDetailView.vue"),
+        path: "order/checkout/:orderGuid",
+        name: "OrderCheckout",
+        component: () => import("@/views/misc/orders/checkout/OrderCheckoutView.vue"),
         props: true
       },
       {
-        path:"carts",
-        name:"Carts",
-        component: () => 
-          import("@/views/misc/carts/CartListView.vue"),
+        path: "orders/view/:orderGuid",
+        name: "OrderDetail",
+        component: () => import("@/views/misc/orders/OrderDetailView.vue"),
+        props: true,
+      },
+      {
+        path: "carts",
+        name: "Carts",
+        component: () => import("@/views/misc/carts/CartListView.vue"),
       },
     ],
   },
@@ -90,6 +94,13 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+  strict:true,
+  sensitive:true
 });
+
+// router.beforeEach(async (to, from) => {
+//   console.log('to: ', to);
+//   console.log('from: ', from);
+// });
 
 export default router;

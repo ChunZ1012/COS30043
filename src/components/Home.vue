@@ -6,11 +6,7 @@
       class="w-100 mx-auto mb-3"
       height="500"
     >
-      <v-carousel 
-        hide-delimiter-background 
-        show-arrows="hover"
-        cycle
-      >
+      <v-carousel hide-delimiter-background show-arrows="hover" cycle>
         <v-carousel-item
           v-for="(slider, i) in sliders"
           :key="i"
@@ -40,34 +36,51 @@
 </template>
 
 <script>
+import { useGET } from "@/assets/js/HttpManager";
 import ProductsCarousel from "@/views/misc/products/ProductsCarouselView.vue";
-import ProductData from '@/assets/data/Products.json';
-import ProductCategoryEnum from "@/assets/js/enums/ProductCategoryEnum.js"
-import SliderData from '@/assets/data/Sliders.json';
+import ProductCategoryEnum from "@/assets/js/enums/ProductCategoryEnum.js";
+import SliderData from "@/assets/data/Sliders.json";
 
 export default {
   name: "Home",
-
-  data: () => ({
-    sliders: [],
-    products: [],
-    productTypes: []
-  }),
+  data: function () {
+    return {
+      isLoading: true,
+      // Arrays
+      sliders: [],
+      products: [],
+      productTypes: [],
+    };
+  },
   created() {
+    this.getProductData();
     this.sliders = SliderData;
-    this.products = ProductData;
-    // Get distinct product type value from product list
-    this.productTypes = new Set(this.products.map(p => p.type));
   },
   methods: {
+    getProductData() {
+      this.isLoading = true;
+      // Set api url
+      let url = "http://localhost/COS30043/index.php/products/list?desc=false";
+      // fetch data from api and assign to local variables
+      const { error, stop } = useGET(url, {
+        callback: (r) => {
+          this.products = r;
+          // Get distinct product type value from product list
+          this.productTypes = new Set(this.products.map((p) => p.productType));
+          stop();
+          // Stop loading overlay
+          this.isLoading = false;
+        },
+      });
+    },
     getProductByCategory(category) {
       return this.products.filter(
-        (p) => p.type.toLowerCase() == category.toLowerCase()
+        (p) => p.productType.toLowerCase() == category.toLowerCase()
       );
     },
     getProductCategoryTitle(category) {
       return ProductCategoryEnum[category];
-    }
+    },
   },
   components: {
     ProductsCarousel,

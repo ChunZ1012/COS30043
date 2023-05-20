@@ -1,5 +1,5 @@
 <template>
-    <ProductDetail />
+  <ProductDetail />
 </template>
 
 <script>
@@ -9,11 +9,10 @@ import { defineComponent } from "vue";
 import ProductDetail from "@/components/misc/products/ProductDetail.vue";
 
 export default defineComponent({
-    name: "ProductDetailView",
+  name: "ProductDetailView",
 
-    components: {
-        ProductDetail,
-    },
+  components: {
+    ProductDetail,
+  },
 });
 </script>
-  

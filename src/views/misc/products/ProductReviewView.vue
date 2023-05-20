@@ -1,5 +1,5 @@
 <template>
-    <ProductReview />
+  <ProductReview />
 </template>
 
 <script>
@@ -9,11 +9,10 @@ import { defineComponent } from "vue";
 import ProductReview from "@/components/misc/products/ProductReview.vue";
 
 export default defineComponent({
-    name: "ProductReviewView",
+  name: "ProductReviewView",
 
-    components: {
-        ProductReview,
-    },
+  components: {
+    ProductReview,
+  },
 });
 </script>
-  

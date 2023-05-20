@@ -3,10 +3,7 @@
     <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
     <v-spacer></v-spacer>
     <!-- Search field -->
-    <v-col
-      cols="12"
-      md="4"
-    >
+    <v-col cols="12" md="4">
       <v-text-field
         v-model="textSearch"
         label="Search"
@@ -23,11 +20,7 @@
 
   <v-row>
     <!-- Filtering Panel -->
-    <v-col
-      class="d-lg-block d-none"
-      cols="12"
-      md="2"
-    >
+    <v-col class="d-lg-block d-none" cols="12" md="2">
       <ProductListFilter
         :priceRange="priceRange"
         :categories="categories"
@@ -37,32 +30,19 @@
       ></ProductListFilter>
     </v-col>
     <!-- Container -->
-    <v-col 
-      cols="12" 
-      md="10"
-    >
+    <v-col cols="12" md="10">
       <h2>{{ breadcrumbs.length > 1 ? breadcrumbs[1] : "" }}</h2>
 
-      <div class="d-flex flex-row gap-2 align-items-center d-md-none"
-      >
-        <v-dialog
-          v-model="mobileFilterDialog"
-          width="auto"
-          class="pa-2"
-        >
-          <template v-slot:activator="{ props }"
-          >
+      <div class="d-flex flex-row gap-2 align-items-center d-md-none">
+        <v-dialog v-model="mobileFilterDialog" width="auto" class="pa-2">
+          <template v-slot:activator="{ props }">
             <v-btn
               class="ma-2"
               color="gray-lighten-3"
               variant="outlined"
               v-bind="props"
             >
-              <v-icon
-                start
-                size="large"
-                icon="mdi-filter-variant"
-              ></v-icon>
+              <v-icon start size="large" icon="mdi-filter-variant"></v-icon>
               Filter
             </v-btn>
           </template>
@@ -90,25 +70,25 @@
                 color="gray-lighten-3"
                 variant="outlined"
                 @click="mobileFilterDialog = false"
-              >Close</v-btn>
+                >Close</v-btn
+              >
               <v-btn
                 class="ma-2"
                 color="gray-lighten-3"
                 variant="outlined"
                 @click="mobileFilterDialog = false"
-              >Apply</v-btn>
+                >Apply</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
       </div>
 
       <!-- Sorting -->
-      <div 
+      <div
         class="d-flex flex-row col-md-4 col-12 py-2 my-2 gap-3 align-items-center"
       >
-        <span
-          class="fs-6"
-        >Sort By: </span>
+        <span class="fs-6">Sort By: </span>
         <v-select
           v-model="selectedSort"
           :items="sortOptions"
@@ -123,83 +103,89 @@
         ></v-select>
         <v-spacer></v-spacer>
       </div>
-      <!-- Product List -->
-      <v-row class="mt-2">
-        <v-col
-          cols="12"
-          md="4"
-          lg="3"
-          class="my-1"
-          v-for="(product, idx) in getCurrentPageProducts()"
-          :key="idx"
+      <div>
+        <v-overlay
+          v-model="isLoading"
+          contained
+          scroll-strategy="block"
+          class="align-center justify-center"
         >
-          <ProductCard
-            :pid="product.id"
-            :title="product.title"
-            :url="product.url"
-            :price="product.price"
-            :discount="product.discount"
-            :distAmt="product?.distAmt"
-            :showRating="true"
-            :rating="getProductAvgRating(product?.info)"
-            :variableWidth="true"
-          ></ProductCard>
-        </v-col>
-      </v-row>
-      <!-- Product List Paginator -->
-      <v-pagination
-        v-model="currentPage"
-        :length="Math.ceil(filteredList.length / itemsPerPage)"
-        :total-visible="isMobileDevice() ? 2 : 6"
-        rounded="circle"
-        ellipsis="."
-        variant="text"
-        :size="isMobileDevice() ? 'small' : 'default'"
-        class="mt-md-4 mt-3"
-      ></v-pagination>
+          <v-progress-circular
+            color="primary"
+            indeterminate
+            size="64"
+          ></v-progress-circular>
+        </v-overlay>
+        <!-- Product List -->
+        <v-row class="mt-2" v-if="!isLoading">
+          <v-col
+            cols="12"
+            md="4"
+            lg="3"
+            class="my-1"
+            v-for="(product, idx) in getCurrentPageProducts()"
+            :key="idx"
+          >
+            <ProductCard
+              :pid="product?.productId"
+              :title="product?.productTitle"
+              :url="product?.productImageUrl"
+              :price="product?.productPrice"
+              :discount="product?.productDist"
+              :distAmt="product?.productDistAmt"
+              :showRating="true"
+              :rating="parseFloat(product.productOverallRating).toFixed(2)"
+              :variableWidth="true"
+            ></ProductCard>
+          </v-col>
+        </v-row>
+        <!-- Product List Paginator -->
+        <v-pagination
+          v-model="currentPage"
+          :length="Math.ceil(filteredList.length / itemsPerPage)"
+          :total-visible="isMobileDevice() ? 2 : 6"
+          rounded="circle"
+          ellipsis="."
+          variant="text"
+          :size="isMobileDevice() ? 'small' : 'default'"
+          class="mt-md-4 mt-3"
+        ></v-pagination>
+      </div>
     </v-col>
   </v-row>
 </template>
 
 <style type="text/css">
 ul.v-pagination__list {
-  padding:0px;
+  padding: 0px;
 }
 </style>
 
 <script>
 import { isMobile } from "mobile-device-detect";
+import { useGET } from "@/assets/js/HttpManager";
 import ProductCard from "@/views/misc/products/ProductCardView.vue";
-import ProductData from '@/assets/data/Products.json';
-import ProductCategoryEnum from "@/assets/js/enums/ProductCategoryEnum.js"
+import ProductCategoryEnum from "@/assets/js/enums/ProductCategoryEnum.js";
 import ProductListFilter from "./ProductListFilter.vue";
 
 export default {
   name: "ProductList",
-  props: {
-    breadcrumbTitle: {
-      type:String,
-      default:"All Products"
-    },
-    productType: {
-      type:String,
-      default:undefined
-    },
-  },
-  data: function() {
+  data: function () {
     return {
       // #############
       // Real
       // #############
       breadcrumbs: ["Home"],
       pType: "all",
+      // Loading
+      isLoading: true,
       // Filter
-      mobileFilterDialog:false,
-      priceRangeTimeout:undefined,
+      mobileFilterDialog: false,
+      priceRangeTimeout: undefined,
       textSearch: "",
       selectedCategory: [],
-      priceMax: 9999.99,
-      priceRange: [0,  9999.99],
+      priceMax: 3500,
+      priceRange: [0, 3500],
       // Pagination
       currentPage: 1,
       itemsPerPage: 12,
@@ -223,76 +209,119 @@ export default {
           name: "hp",
           title: "Headphones",
         },
+        {
+          name: "ac",
+          title: "Accessories",
+        },
       ],
       //Sorting
       selectedSort: {
-          optionId:1,
-          optionText: "Price: Low to High"
+        optionId: 1,
+        optionText: "Price: Low to High",
       },
       sortOptions: [
         {
-          optionId:1,
-          optionText: "Price: Low to High"
+          optionId: 1,
+          optionText: "Price: Low to High",
         },
         {
-          optionId:2,
-          optionText: "Price: High to Low"
+          optionId: 2,
+          optionText: "Price: High to Low",
         },
         {
-          optionId:3,
-          optionText: "Rating: Low to High"
+          optionId: 3,
+          optionText: "Rating: Low to High",
         },
         {
-          optionId:4,
-          optionText: "Rating: High to Low"
-        }
-      ]
-    }
+          optionId: 4,
+          optionText: "Rating: High to Low",
+        },
+      ],
+    };
   },
   created() {
-    this.initialize();
+    this.isLoading = true;
+    // Set api url
+    let url = "http://localhost/COS30043/index.php/products/list";
+    // fetch data from api and assign to local variables
+    const { error, stop } = useGET(url, {
+      callback: (r) => {
+        this.products = r;
+        this.initialize();
+        stop();
+      },
+    });
+
     // Watch route changes
     this.$watch(
       () => this.$route.params,
-      (toParams, previousParams) => {
-        let params = undefined;
-        if(Object.hasOwn(toParams, 'productType')) {
-          if(Object.keys(ProductCategoryEnum).includes(toParams.productType)) {
-            params = toParams;
-          }
+      (toParams, fromParams) => {
+        if (Object.hasOwn(toParams, "productType")) {
+          this.initialize();
         }
-        this.initialize(params);
       }
     );
   },
+  beforeRouteEnter(to, from) {
+    // called before the route that renders this component is confirmed.
+    // does NOT have access to `this` component instance,
+    // because it has not been created yet when this guard is called!
+    console.log('beforeRouteEnter called');
+  },
+  beforeRouteUpdate(to, from) {
+    // called when the route that renders this component has changed, but this component is reused in the new route.
+    // For example, given a route with params `/users/:id`, when we navigate between `/users/1` and `/users/2`,
+    // the same `UserDetails` component instance will be reused, and this hook will be called when that happens.
+    // Because the component is mounted while this happens, the navigation guard has access to `this` component instance.
+    console.log('beforeRouteUpdate called');
+  },
+  beforeRouteLeave(to, from) {
+    // called when the route that renders this component is about to be navigated away from.
+    // As with `beforeRouteUpdate`, it has access to `this` component instance.
+    console.log('beforeRouteLeave called');
+  },
+  beforeUpdate() {
+    // console.log('beforeUpdated called');
+    // Start loading overlay
+    this.isLoading = true;
+  },
+  updated() {
+    // console.log('updated called');
+    // Stop loading overlay
+    this.isLoading = false;
+  },
   methods: {
     initialize(toParams = undefined) {
-      // Testing, read data from json
-      this.products = ProductData;
-      // Get the default breadcrumb title (Use for All Product)
-      let breadcrumbTitle = this.breadcrumbTitle;
+      /*
       // If the user do not navigate to other category page, and land on All Product page
-      let currentUrl = this.$route.path.split('/', 3);
-      if((toParams === undefined && this.productType == undefined) || (currentUrl.length > 2 && currentUrl[2] == 'all')) {
-        this.pType = 'all';
+      let currentUrl = this.$route.path.split("/", 3);
+      if (
+        (toParams === undefined && this.productType == undefined) ||
+        (currentUrl.length > 2 && currentUrl[2] == "all")
+      ) {
+        this.pType = "all";
       }
       // productType is passed by the router (Defined in @/router/index.js)
       // If the user click on the other category page
-      else if(toParams !== undefined) {
+      else if (toParams !== undefined) {
         this.pType = toParams.productType;
-      }
-      else if(this.productType.length > 0) {
-        console.log(this.productType);
+      } else if (this.productType.length > 0) {
         this.pType = this.productType;
       }
-
-      console.log('toParams null: ' + (toParams == undefined) + ', product type: ' + this.productType + ', pType: ' + this.pType);
+      // console.log('toParams null: ' + (toParams == undefined) + ', product type: ' + this.productType + ', pType: ' + this.pType);
+      this.pType = this.$route.params.productType == {} ? "all" : this.$route.params.productType;
 
       // if the breadcrumb title is empty
       // then we will set the title to based on the product type
-      if(breadcrumbTitle.length <= 0 || this.pType != 'all') breadcrumbTitle = this.getProductCategoryTitle(this.pType);
+      if (this.pType != "all")
+        breadcrumbTitle = this.getProductCategoryTitle(this.pType);
       // Set the breadcrumb title
-      if(this.breadcrumbs.length > 1) this.breadcrumbs[1] = breadcrumbTitle;
+
+      */
+      this.pType = this.$route.params.productType;
+      let breadcrumbTitle = this.getProductCategoryTitle(this.pType);
+      
+      if (this.breadcrumbs.length > 1) this.breadcrumbs[1] = breadcrumbTitle;
       else this.breadcrumbs.push(breadcrumbTitle);
 
       // Assign the product list to products
@@ -311,59 +340,72 @@ export default {
     filterProducts() {
       // Get the correct products list based on the filter conditions
       // Get the original product list when either the selected category is empty, or there is no keyword enetered by user
-      let templist = ((this.textSearch == undefined || this.textSearch.length <= 0) || (this.selectedCategory.length <= 0)) ? this.products : this.filteredList;
+      if (this.products == undefined || this.products.length == 0) return;
+
+      let templist =
+        this.textSearch == undefined ||
+        this.textSearch.length <= 0 ||
+        this.selectedCategory.length <= 0
+          ? this.products
+          : this.filteredList;
       let self = this;
 
       // Filter by product type (eg. recommended, best-seller), exclude All Product
-      templist = templist.filter(p => (self.pType.toLowerCase() == "all") ? true : (self.pType.toLowerCase().includes(p.type.toLowerCase())));
+      templist = templist.filter((p) =>
+        self.pType.toLowerCase() == "all"
+          ? true
+          : self.pType.toLowerCase().includes(p.productType.toLowerCase())
+      );
 
       // If the cateogy filter is selected at least one
-      if(this.selectedCategory.length > 0) {
-        templist = templist.filter(p => {
+      if (this.selectedCategory.length > 0) {
+        templist = templist.filter((p) => {
           // Check if the product has same category as selected categories
-          let isInclude = self.selectedCategory.includes(p.catg.toLowerCase());
+          let isInclude = self.selectedCategory.includes(
+            p.productCatg.toLowerCase()
+          );
           // If there is any text keyed into the search field, then apply filter to products list
-          if(this.textSearch !== undefined || this.textSearch.length > 0) {
-            isInclude &= (p.title.toLowerCase().includes(this.textSearch.toLowerCase()));
+          if (this.textSearch !== undefined || this.textSearch.length > 0) {
+            isInclude &= p.productTitle
+              .toLowerCase()
+              .includes(this.textSearch.toLowerCase());
           }
           // return the include status
           return isInclude;
         });
-      }
-      else {
+      } else {
         // if user had keyed in the keyword, then filter the list
-        if(this.textSearch !== undefined || this.textSearch.length > 0) {
+        if (this.textSearch !== undefined || this.textSearch.length > 0) {
           templist = templist.filter((p) =>
-            p.title.toLowerCase().includes(this.textSearch.toLowerCase())
+            p.productTitle.toLowerCase().includes(this.textSearch.toLowerCase())
           );
         }
       }
       // Filter by price range
-      templist = templist.filter(p => {
-        let finalPrice = p.discount ? (p.price - p.distAmt) : p.price;
-        return (finalPrice >= this.priceRange[0]) && (finalPrice <= this.priceRange[1]);
+      templist = templist.filter((p) => {
+        let finalPrice = this.calculateProductPrice(p);
+        return (
+          finalPrice >= this.priceRange[0] && finalPrice <= this.priceRange[1]
+        );
       });
-
-      switch(this.selectedSort.optionId) {
+      // Sorting
+      switch (this.selectedSort.optionId) {
         case 1:
         case 2:
-          templist = templist.sort((a, b) =>  {
-            let ap = a.discount ? (a.price - a.distAmt) : a.price;
-            let bp = b.discount ? (b.price - b.distAmt) : b.price;
+          templist = templist.sort((a, b) => {
+            let ap = this.calculateProductPrice(a);
+            let bp = this.calculateProductPrice(b);
 
-            return this.selectedSort.optionId == 1 ? (ap - bp) : (bp - ap);
+            return this.selectedSort.optionId == 1 ? ap - bp : bp - ap;
           });
           break;
         case 3:
         case 4:
-          templist = templist.sort((a, b) =>  {
-            let ar = a.info.reviews.reduce((total, r) => total + r.userRating, 0);
-            let br = b.info.reviews.reduce((total, r) => total + r.userRating, 0);
+          templist = templist.sort((a, b) => {
+            let ar = a.productOverallRating;
+            let br = b.productOverallRating;
 
-            ar = ar / a.info.reviews.length;
-            br = br / b.info.reviews.length;
-
-            return this.selectedSort.optionId == 3 ? (ar - br) : (br - ar);
+            return this.selectedSort.optionId == 3 ? ar - br : br - ar;
           });
           break;
       }
@@ -376,18 +418,27 @@ export default {
       this.selectedCategory = data;
     },
     onPriceRangeChange(data) {
-      if(this.priceRangeTimeout !== undefined) clearTimeout(this.priceRangeTimeout);
+      this.isLoading = true;
+      if (this.priceRangeTimeout !== undefined)
+        clearTimeout(this.priceRangeTimeout);
       this.priceRangeTimeout = setTimeout(() => {
         this.priceRange = data;
+        this.isLoading = false;
       }, 550);
     },
+    calculateProductPrice(p) {
+      return p.productDist ? p.productPrice - p.productDistAmt : p.productPrice;
+    },
     getProductAvgRating(productInfo) {
-      let totalRating = productInfo.reviews.reduce((total, r) => total + r.userRating, 0);
-      return (totalRating / (productInfo.reviews.length)).toFixed(2);
+      let totalRating = productInfo.reviews.reduce(
+        (total, r) => total + r.userRating,
+        0
+      );
+      return (totalRating / productInfo.reviews.length).toFixed(2);
     },
     getProductCategoryTitle(category) {
       return ProductCategoryEnum[category];
-    }
+    },
   },
   watch: {
     selectedCategory() {
@@ -396,16 +447,16 @@ export default {
     textSearch() {
       this.filterProducts();
     },
-    priceRange(){
+    priceRange() {
       this.filterProducts();
     },
     selectedSort() {
       this.filterProducts();
-    }
+    },
   },
   components: {
     ProductCard,
-    ProductListFilter
+    ProductListFilter,
   },
 };
 </script>

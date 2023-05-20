@@ -69,12 +69,7 @@
                   </v-card>
                 </v-dialog>
               </a>
-              <v-btn 
-                color="primary" 
-                class="mt-2" 
-                block
-                @click="promptDialog()"
-              >
+              <v-btn color="primary" class="mt-2" block @click="promptDialog()">
                 Login
                 <Dialog
                   ref="loginDialog"
@@ -103,14 +98,14 @@
 </template>
 
 <script>
-import Dialog from '@/components/misc/dialogs/Dialog.vue';
+import Dialog from "@/components/misc/dialogs/Dialog.vue";
 
 export default {
   name: "Login",
   data: () => ({
     email: "",
     password: "",
-    resetEmail:"",
+    resetEmail: "",
     showPassword: false,
     dialog: false,
     // ###########
@@ -135,7 +130,7 @@ export default {
     },
     promptDialog() {
       this.$refs.loginDialog.showDialog();
-    }
+    },
   },
   components: {
     Dialog,

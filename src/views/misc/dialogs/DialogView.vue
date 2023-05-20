@@ -1,5 +1,5 @@
 <template>
-    <Dialog></Dialog>
+  <Dialog></Dialog>
 </template>
 
 <script>
@@ -9,11 +9,10 @@ import { defineComponent } from "vue";
 import Dialog from "@/components/misc/dialogs/Dialog.vue";
 
 export default defineComponent({
-name: "DialogView",
+  name: "DialogView",
 
-components: {
+  components: {
     Dialog,
-},
+  },
 });
 </script>
-  
