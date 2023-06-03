@@ -3,19 +3,19 @@
     role="button"
     :elevation="4"
     variant="plain"
-    class="mx-auto pa-2 text-dark w-100 order-card"
+    class="mx-auto pa-2 text-dark w-100 w-md-80"
     :ripple="true"
     :rounded="8"
     :color="white"
     :to="{
-      name: orderGuid == undefined ? null: 'OrderDetail',
+      name: this.order.orderId == undefined ? null: 'OrderDetail',
       params: {
-        orderGuid: orderGuid,
+        orderGuid: this.order.orderId,
       },
     }"
   >
-    <p v-show="showOrderId" class="text-dark">
-      <i>Order ID: {{ orderId }}</i>
+    <p v-show="showOrderGuid" class="text-dark">
+      <i>Order ID: {{ this.order.orderId }}</i>
     </p>
 
     <template v-for="(product, idx) in order.orderDetail">
@@ -86,7 +86,7 @@
       <template v-else>
         <v-row :class="idx == 0 && showAllProducts ? 'mt-1' : null">
           <!-- Order Image -->
-          <v-col cols="4" :md="isInDetail ? 1 : 2" class="ps-3">
+          <v-col cols="4" :md="isInDetail ? 2 : 2" class="ps-3">
             <v-img contain aspect-ratio="1/1" :src="product.variantImageUrl">
               <template v-slot:placeholder>
                 <div class="d-flex align-center justify-center fill-height">
@@ -100,7 +100,7 @@
           </v-col>
 
           <!-- Order Detail -->
-          <v-col cols="8" :md="isInDetail ? 11 : 10" class="text-dark">
+          <v-col cols="8" :md="isInDetail ? 10: 10" class="text-dark">
             <p class="fs-md-4 fs-6">
               <strong>{{ product.productName }}</strong>
             </p>
@@ -195,15 +195,11 @@ import { isMobile } from "mobile-device-detect";
 export default {
   name: "OrderCard",
   props: {
-    orderGuid: {
-      type: String,
-      default: undefined,
-    },
     order: {
       type: Object,
       default: {},
     },
-    showOrderId: {
+    showOrderGuid: {
       type: Boolean,
       default: true,
     },

@@ -57,6 +57,7 @@
             </p>
 
             <v-text-field
+              @click.prevent
               align="center"
               type="number"
               variant="outlined"
@@ -70,9 +71,9 @@
               min="1"
               :max="cart.variantAvailQty"
               prepend-inner-icon="mdi-minus"
-              @click:prepend-inner.prevent="onQtyChanged(false)"
+              @click:prepend-inner.stop.prevent="onQtyChanged(false)"
               append-inner-icon="mdi-plus"
-              @click:append-inner.prevent="onQtyChanged(true)"
+              @click:append-inner.stop.prevent="onQtyChanged(true)"
             ></v-text-field>
           </v-col>
           <v-spacer></v-spacer>
@@ -161,7 +162,7 @@ export default {
               if(this.cartQtyChangeTimeout != null) clearTimeout(this.cartQtyChangeTimeout);
               this.isLoading = true;
               this.cartQtyChangeTimeout = setTimeout(() => {
-                this.$store.commit("editCart", {
+                this.$store.commit("cart/editCart", {
                   cartId: this.cart.cartId,
                   variantId: this.cart.variantId,
                   variantOrderedQty: this.cart.variantOrderedQty,
@@ -205,47 +206,20 @@ export default {
     onQtyChanged(isIncrement) {
       let v = this.cart;
       let vQty = parseInt(v.variantOrderedQty);
+      let aQty = parseInt(v.variantAvailQty);
 
-      let qty = (vQty == 1 ? 0 : 1) * -1;
-      if (isIncrement) qty = vQty == vQty ? 0 : 1;
+      let qty = 0;
+      if(isIncrement) qty = (vQty == aQty) ? 0 : 1;
+      else qty = (vQty == 1) ? 0 : -1;
       this.cart.variantOrderedQty = parseInt(this.cart.variantOrderedQty) + qty;
 
       this.$emit("onQtyChanged");
     },
     removeCartItem() {
       if (confirm("Are you sure to remove the item?")) {
-        this.$store.dispatch("removeFromCart", {
+        this.$store.dispatch("cart/removeFromCart", {
           cartId: this.cart.cartId,
         });
-
-        // let url = "http://localhost/COS30043/index.php/carts/delete?cart_id=" + this.cart.cartId;
-        // const { result, error } = useDELETE(url);
-
-        // watchEffect(() => {
-        //     if(result.value) {
-        //         if(!result.value) useDialog("Oops", "Error when removing item from the cart!", false, true);
-        //         else useToast("Successfully removed!");
-
-        //         this.$emit('getCarts');
-        //     }
-        //     if(error.value) {
-        //         useDialog("Oops", "Error when fetching the cart data!", false, true);
-        //         console.log("Error: " + error.value.error);
-        //     }
-        // });
-        // const { result, error } = useDELETE(url);
-
-        // watchEffect(() => {
-        //     if(result.value) {
-        //         useToast("Successfully Removed!");
-        //         this.$store.commit('removeFromCart', {
-        //             productVariantId: this.cart.productVariantId,
-        //         });
-        //     }
-        //     if(error.value && Object.keys(error.value).length) {
-        //         useToast(error.value.error, "error");
-        //     }
-        // });
       }
     },
     getProductPrice(withDiscount = false) {

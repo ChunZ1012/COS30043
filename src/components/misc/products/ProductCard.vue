@@ -20,7 +20,13 @@
     }"
   >
     <v-hover v-slot="{ isHovering, props }">
-      <v-img v-bind="props" height="250" aspect-ratio="1/1" :src="url">
+      <!-- Non hover image -->
+      <v-img
+        v-bind="props"
+        height="250"
+        aspect-ratio="1/1"
+        :src="url"
+      >
         <template v-slot:placeholder>
           <div class="d-flex align-center justify-center fill-height">
             <v-progress-circular
@@ -29,9 +35,11 @@
             ></v-progress-circular>
           </div>
         </template>
-
+        <!-- Hovered image -->
         <v-fade-transition>
-          <v-img 
+          <v-img
+            v-bind="props" 
+            v-show="isHovering && hoverUrl.length > 0"
             aspect-ratio="1/1" 
             :src="hoverUrl"
             class="product-card-hover"
@@ -39,7 +47,7 @@
         </v-fade-transition>
       </v-img>
     </v-hover>
-
+    <!-- Product Price -->
     <v-card-item>
       <h4 class="fw-bold text-truncate">{{ title }}</h4>
       <div class="d-flex flex-row align-items-center" v-if="discount">
@@ -55,7 +63,7 @@
         <span class="fs-5" color="white">RM {{ getRoundedPrice }}</span>
       </div>
     </v-card-item>
-
+    <!-- Product Rating -->
     <div
       v-if="showRating"
       class="d-flex flex-row align-items-center p-1 ms-2 m-1"
@@ -68,8 +76,8 @@
         density="compact"
       ></v-rating>
     </div>
-
-    <v-overlay
+    <!-- What is this? -->
+    <!-- <v-overlay
       contained
       :absolute="absolute"
       :model-value="isHovering"
@@ -87,14 +95,14 @@
           </template>
         </v-img>
       </template>
-    </v-overlay>
+    </v-overlay> -->
   </v-card>
 </template>
 
 <style type="text/css">
   .product-card-hover {
     height:100%;
-    background-color: var(--v-theme-background);
+    background-color: white;
   }
 </style>
 

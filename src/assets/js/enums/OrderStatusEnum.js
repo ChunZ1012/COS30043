@@ -1,17 +1,16 @@
 const OrderStatusEnum = Object.freeze({
-  PLACED: {
+  0: {
+    text:'All'
+  },
+  1 : {
     text: "Order Placed",
     icon: "mdi-equal-box",
   },
-  PICKED: {
+  2: {
     text: "Parcel Picked",
     icon: "mdi-check-all",
   },
-  SHIPPING: {
-    text: "Shipping",
-    icon: "mdi-airplane-takeoff",
-  },
-  DELIVERED: {
+  3: {
     text: "Delivered",
     icon: "mdi-truck-delivery",
   },

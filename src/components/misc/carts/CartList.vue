@@ -2,24 +2,14 @@
   <div class="cart-container">
     <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
     <v-spacer></v-spacer>
-    <v-col cols="12" class="p-1 p-md-3">
+    <v-col 
+      cols="12" 
+      class="p-1 p-md-3" 
+    >
       <h2>{{ breadcrumbTitle }}</h2>
-
-      <v-overlay
-        v-model="isLoading"
-        v-if="isLoading"
-        contained
-        scroll-strategy="block"
-        class="align-center justify-center"
+      <v-table
+        class="w-100 w-md-95 mx-auto"
       >
-        <v-progress-circular
-          color="primary"
-          indeterminate
-          size="64"
-        ></v-progress-circular>
-      </v-overlay>
-
-      <v-table v-else>
         <thead>
           <v-checkbox
             label="Select All"
@@ -37,7 +27,7 @@
       </v-table>
     </v-col>
 
-    <div class="fixed-bottom">
+    <div class="fixed-bottom mt-1">
       <v-card :elevation="8">
         <div
           class="d-flex flex-row float-right align-items-center m-2 p-2 gap-3"
@@ -69,8 +59,11 @@
 
 <script>
 import CartCard from "@/views/misc/carts/CartCardView.vue";
+import LoadingView from "@/views/misc/helpers/LoadingView.vue";
 import { usePOST } from "@/assets/js/HttpManager";
 import { useDialog } from "@/assets/js/SweetAlert2Dialog";
+import { mapState, mapGetters } from "vuex";
+import { BASEURL } from "@/inc/const";
 
 export default {
   name: "OrderList",
@@ -98,12 +91,16 @@ export default {
   created() {
     this.getCarts();
   },
+  computed: {
+    ...mapState(['auth', 'cart', 'loading']),
+    ...mapGetters(['auth', 'cart', 'loading']),
+  },
   methods: {
     getCarts() {
-      this.$store.commit("fetchCartData");
+      this.$store.commit("cart/fetchCartData");
       this.$store.watch(
         (state, getters) => {
-          return state.carts;
+          return getters['cart/carts'];
         },
         (v) => {
           let checkedStatus = this.carts.map((v) => {
@@ -126,40 +123,11 @@ export default {
 
           this.carts = v;
           this.onItemToggleCheck();
-          this.isLoading = false;
         }
       );
-
-      // FIXME: Modify the below line to match with th api in future
-      // let url = "http://localhost/COS30043/index.php/carts/list";
-      // const { result, error } = useGET(url);
-      // watchEffect(() => {
-      //     if(result.value && Object.keys(result.value).length) {
-      //         this.carts = result.value;
-      //     }
-      //     if(error.value) {
-      //         useDialog("Oops", "Error when fetching your cart data! Please try again later.",
-      //             false,
-      //             true,
-      //             () => {
-      //                 this.$router.replace({
-      //                     name:"Home"
-      //                 });
-      //             }
-      //         )
-      //     }
-      // });
-
-      // let carts = this.$store.getters.getCarts.map(c => {
-      //     return {
-      //         productId: c.productId,
-      //         productVariantId: c.productVariantId,
-      //         productVariantQty: c.productVariantQty
-      //     }
-      // });
     },
     proceedToPayment() {
-      let url = "http://localhost/COS30043/index.php/orders/add";
+      let url = `${BASEURL}/orders/add`;
       let data = this.carts
         .filter(c => (!c.isDisabled && c.isChecked))
         .map(c => {
@@ -170,7 +138,7 @@ export default {
           }
         });
 
-      const { error, stop } = usePOST(url, {
+      usePOST(url, {
         data: {
           fromCart: true,
           data: data
@@ -189,7 +157,6 @@ export default {
               }
             });
           }
-          stop();
         }
       })
     },
@@ -232,6 +199,7 @@ export default {
   },
   components: {
     CartCard,
+    LoadingView
   },
 };
 </script>

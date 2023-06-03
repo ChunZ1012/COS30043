@@ -5,13 +5,13 @@
 @import "bootstrap/scss/utilities";
 
 $utilities: map-merge(
-  $utilities,
-  (
-    "font-size": map-merge(
-      map-get($utilities, "font-size"),
-    (responsive: true),
-    ),
-  )
+    $utilities,
+    (
+        "font-size": map-merge(
+            map-get($utilities, "font-size"),
+            (responsive: true),
+        ),
+    )
 );
 
 
@@ -31,6 +31,50 @@ $utilities: map-merge(
                         8: ($font-size-base * 0.5)
                     )
                 )
+            )
+        )
+    )
+);
+
+@for $i from 1 through 100 {
+    $utilities: map-merge(
+        $utilities,
+        (
+            "width": map-merge(
+                map-get($utilities, "width"),
+                (
+                    values: map-merge(
+                        map-get(
+                            map-get($utilities, "width"),
+                            "values"
+                        ),
+                        (
+                            $i: $i * 1%
+                        )
+                    )
+                )
+            )
+        )
+    )
+}
+
+$utilities: map-merge(
+    $utilities,
+    (
+        "width": map-merge(
+            map-get($utilities, "width"),
+            (responsive: true),
+        ),
+    )
+);
+
+$utilities: map-merge(
+    $utilities, 
+    (
+        "display": map-merge(
+            map-get($utilities, "display"),
+            (
+                values: contents
             )
         )
     )

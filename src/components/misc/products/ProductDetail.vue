@@ -30,7 +30,7 @@
           :height="isMobileDevice ? -1 : 400"
         >
           <v-carousel-item
-            v-for="(imageUrl, i) in getProductImageUrls"
+            v-for="(imageUrl, i) in getCurrentProductVariant.productImageUrl.split(',')"
             :class="imageUrl"
             aspect-ratio="1/1"
             :key="i"
@@ -128,6 +128,7 @@
               variant="outlined"
               type="submit"
               block
+              @click.stop.prevent="onBuyNowClick"
               :disabled="!buttonEnabled"
               >Buy Now</v-btn
             >
@@ -243,12 +244,11 @@
 </style>
 
 <script>
-import { h } from "vue";
 import { isMobile } from "mobile-device-detect";
-import { useLoading, useToast, useDialog } from "@/assets/js/SweetAlert2Dialog";
-import { useGET } from "@/assets/js/HttpManager";
-import Dialog from "@/components/misc/dialogs/Dialog.vue";
+import { useLoading, useDialog } from "@/assets/js/SweetAlert2Dialog";
+import { useGET, usePOST } from "@/assets/js/HttpManager";
 import ProductReviewView from "@/views/misc/products/ProductReviewView.vue";
+import { BASEURL, resetLoginAndRedirect } from "@/inc/const";
 
 export default {
   name: "ProductDetail",
@@ -288,7 +288,7 @@ export default {
       // #############
       loading: true,
       breadcrumbs: ["Home", "Product"],
-      product: null,
+      product: {},
       selectedVariant: {},
       buttonEnabled: true,
       orderQty: 1,
@@ -318,16 +318,14 @@ export default {
       );
     },
     getProductImageUrls() {
-      let baseUrl = "http://localhost/COS30043/public/assets/img/";
-      let imageUrls = [];
+      // let imageUrls = [];
 
-      let urls = "";
-      urls = this.getCurrentProductVariant.productImageUrl;
-      urls.split(",").forEach((url) => {
-        imageUrls.push(baseUrl + url);
-      });
+      // urls = this.;
+      // urls.split(",").forEach((url) => {
+      //   imageUrls.push(url);
+      // });
 
-      return imageUrls;
+      // return imageUrls;
     },
     isProductInDiscount() {
       return this.getCurrentProductVariant.productVariantDist;
@@ -353,28 +351,22 @@ export default {
       return parseInt(this.product.productReviews.length);
     },
   },
-  render() {
-    return h("div", "12312312323");
-  },
   methods: {
     fetchData() {
-      let url =
-        "http://localhost/COS30043/index.php/products/get?id=" + this.id;
-
-      const { error, stop } = useGET(url, {
+      let url = `${BASEURL}/products/get?id=${this.id}`;
+      useGET(url, {
         callback: (r, e) => {
           if (e) {
-            useDialog(
-              "Oops",
-              "The product you are looking at is no longer exist!",
-              false,
-              true,
-              () => {
+            useDialog("Oops", {
+              description: "The product you are looking at is no longer exist!",
+              showCancelButton: false,
+              sticky: true,
+              confirmButtonAction:() => {
                 this.$router.replace({
                   name: "Products",
                 });
               }
-            );
+            });
           } else {
             this.product = r;
             this.selectedVariant = this.product.productVariantsInfo.map((v) => {
@@ -384,39 +376,9 @@ export default {
               };
             })[0];
           }
-          stop();
           this.loading = false;
         },
       });
-      // watchEffect(() => {
-      //     if(result.value && Object.keys(result.value).length) {
-      //         this.product = result.value;
-      //         this.selectedVariant = this.product.productVariantsInfo.map(v => {
-      //             return {
-      //                 "variantId": v.productVariantId,
-      //                 "variantValue": v.productVariantValue
-      //             }
-      //         })[0];
-      //         this.loading = false;
-      //     }
-      //     if(error.value) {
-      //         useDialog("Oops", "The product you are looking at is no longer exist!",
-      //             false,
-      //             true,
-      //             () => {
-      //                 this.$router.replace({
-      //                     name:"Products"
-      //                 });
-      //             }
-      //         )
-      //     }
-      // });
-    },
-    getProductDescription() {
-      // return h(
-      //     'div',
-      //     this.product?.productDesc
-      // );
     },
     getProductPrice(isOriginalPrice = false) {
       let vi = this.getCurrentProductVariant;
@@ -448,35 +410,47 @@ export default {
     },
     addToCart() {
       useLoading("Loading...");
-      this.$store.dispatch("addToCart", {
+      this.$store.dispatch("cart/addToCart", {
         variantId: this.selectedVariant.variantId,
         variantOrderedQty: this.orderQty,
       });
-      // let url = "http://localhost/COS30043/index.php/carts/add?variant_id=" + unref(this.selectedVariant).variantId + "&variant_qty=" + this.orderQty;
-
-      // const { error, stop } = useGET(url, {
-      //     callback: (r, e) => {
-      //         if(r) useToast("Successfully Added");
-      //         else if (e) useToast("Error when adding to cart! Please try again later", "error");
-      //         stop();
-      //     }
-      // });
-
-      // watch(() => result.value,
-      //     (newVal, oldVal) => {
-      //         if(newVal && oldVal == null) {
-      //             // useToast("Successfully Added");
-      //             // this.$store.commit('addToCart', {
-      //             //     productVariantId: this.selectedVariant.variantId,
-      //             //     productVariantQty: this.orderQty
-      //             // });
-      //         }
-      //     }
-      // )
-      // watchEffect(() => {
-      //     if (error.value && Object.keys(result.value).length) useToast("Error when adding to cart! Please try again later", "error");
-      // });
     },
+    onBuyNowClick() {
+      let isLoggedIn = this.$store.getters['auth/isLoggedIn'];
+      let token = this.$store.getters['auth/getToken'];
+
+      if(token == '' || !isLoggedIn) {
+        resetLoginAndRedirect();
+      }
+      else {
+        let url = `${BASEURL}/orders/add`;
+        let data = {
+          variantId: this.selectedVariant.variantId,
+          variantOrderedQty: this.orderQty
+        };
+
+        usePOST(url, {
+          data: {
+            fromCart: false,
+            data: data
+          },
+          callback: (r, e) => {
+            if(r.error == true) {
+              useDialog('Oops', 'Error when proceeding with your order. Please try again later', false);
+              console.log(e);
+            }
+            else {
+              this.$router.push({
+                name:'OrderCheckout',
+                params: {
+                  orderGuid: r.orderGuid
+                }
+              });
+            }
+          }
+        })
+      }
+    }
   },
   watch: {
     selectedVariant() {
@@ -484,7 +458,6 @@ export default {
     },
   },
   components: {
-    Dialog,
     ProductReviewView,
   },
 };

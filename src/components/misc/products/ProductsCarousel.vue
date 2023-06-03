@@ -38,7 +38,7 @@
           :url="product?.productImageUrl"
           :hoverUrl="product?.productImageHoverUrl"
           :price="product?.productPrice"
-          :discount="product?.productDist"
+          :discount="product?.productDist == 1"
           :distAmt="product?.productDistAmt"
         ></ProductCard>
       </v-col>
@@ -65,7 +65,10 @@ export default {
       type: String,
       default: "",
     },
-    products: [],
+    products: {
+      type:Array,
+      default: []
+    },
   },
   methods: {
     isMobileDevice() {

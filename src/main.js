@@ -4,7 +4,8 @@ import router from "./router";
 import vuetify from "./plugins/vuetify";
 import { loadFonts } from "./plugins/webfontloader";
 
-import VuexCarts from "@/stores/Carts";
+import store from "./stores/index";
+import { setupWindowResizeWatcher } from "./assets/js/DeviceWatcher";
 
 import { createVuetify } from "vuetify";
 import colors from "vuetify/lib/util/colors.mjs";
@@ -58,8 +59,12 @@ const sw2Theme = {
   cancelButtonColor: colors.red.darken2,
 };
 
-createApp(App)
+
+const app = createApp(App)
   .use(router)
   .use(vuetify)
-  .use(VuexCarts) 
+  .use(store)
   .mount("#app");
+
+// app.config.globalProperties.$windowResize = setupWindowResizeWatcher();
+// app.mount("#app");

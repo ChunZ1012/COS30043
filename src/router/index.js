@@ -1,16 +1,18 @@
 import { createRouter, createWebHistory } from "vue-router";
+import store from "@/stores";
+import { useToast } from "@/assets/js/SweetAlert2Dialog";
+import { resetLoginAndRedirect } from "@/inc/const";
+
+const PUBLIC_ROUTES_NAME = [
+  'Login',
+  'Register',
+  'Home',
+  'Products',
+  'ProductsType',
+  'ProductDetail'
+]
 
 const routes = [
-  {
-    path: "/login",
-    name: "Login",
-    component: () => import("@/views/LoginView.vue"),
-  },
-  {
-    path: "/register",
-    name: "Register",
-    component: () => import("@/views/RegisterView.vue"),
-  },
   {
     path: "/",
     name: "Container",
@@ -35,7 +37,10 @@ const routes = [
                 params: {
                   productType:'all'
                 }
-            }
+            },
+            props: route => ({
+              query: route.query.q
+            })
           },
           {
             path: "types/:productType",
@@ -78,6 +83,21 @@ const routes = [
         name: "Carts",
         component: () => import("@/views/misc/carts/CartListView.vue"),
       },
+      {
+        path: "account",
+        name: "UserAccount",
+        component: () => import("@/views/misc/users/UserAccountView.vue")
+      },
+      {
+        path: "login",
+        name: "Login",
+        component: () => import("@/views/LoginView.vue"),
+      },
+      {
+        path: "register",
+        name: "Register",
+        component: () => import("@/views/RegisterView.vue"),
+      },
     ],
   },
   {
@@ -98,9 +118,12 @@ const router = createRouter({
   sensitive:true
 });
 
-// router.beforeEach(async (to, from) => {
-//   console.log('to: ', to);
-//   console.log('from: ', from);
-// });
+router.beforeEach(async (to, from, next) => {
+    let isPublic = PUBLIC_ROUTES_NAME.includes(to.name);
+    let isLoggedIn = store.getters['auth/isLoggedIn'];
+    
+    if(!isPublic && !isLoggedIn) resetLoginAndRedirect();
+    else next();
+});
 
 export default router;

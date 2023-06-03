@@ -104,20 +104,8 @@
         <v-spacer></v-spacer>
       </div>
       <div>
-        <v-overlay
-          v-model="isLoading"
-          contained
-          scroll-strategy="block"
-          class="align-center justify-center"
-        >
-          <v-progress-circular
-            color="primary"
-            indeterminate
-            size="64"
-          ></v-progress-circular>
-        </v-overlay>
         <!-- Product List -->
-        <v-row class="mt-2" v-if="!isLoading">
+        <v-row class="mt-2">
           <v-col
             cols="12"
             md="4"
@@ -167,6 +155,8 @@ import { useGET } from "@/assets/js/HttpManager";
 import ProductCard from "@/views/misc/products/ProductCardView.vue";
 import ProductCategoryEnum from "@/assets/js/enums/ProductCategoryEnum.js";
 import ProductListFilter from "./ProductListFilter.vue";
+import { mapGetters, mapState } from "vuex";
+import { BASEURL } from "@/inc/const";
 
 export default {
   name: "ProductList",
@@ -177,8 +167,6 @@ export default {
       // #############
       breadcrumbs: ["Home"],
       pType: "all",
-      // Loading
-      isLoading: true,
       // Filter
       mobileFilterDialog: false,
       priceRangeTimeout: undefined,
@@ -237,23 +225,24 @@ export default {
           optionText: "Rating: High to Low",
         },
       ],
+      // Watcher
+      routeUnwatcher: undefined
     };
   },
   created() {
-    this.isLoading = true;
+    this.startLoading;
     // Set api url
-    let url = "http://localhost/COS30043/index.php/products/list";
+    let url = `${BASEURL}/products/list`;
     // fetch data from api and assign to local variables
-    const { error, stop } = useGET(url, {
+    useGET(url, {
       callback: (r) => {
         this.products = r;
         this.initialize();
-        stop();
       },
     });
 
     // Watch route changes
-    this.$watch(
+    this.routeUnwatcher = this.$watch(
       () => this.$route.params,
       (toParams, fromParams) => {
         if (Object.hasOwn(toParams, "productType")) {
@@ -261,64 +250,26 @@ export default {
         }
       }
     );
+
+    let searchQuery = this.$route.query.q;
+    if(searchQuery != undefined || searchQuery != "" || searchQuery.length > 0) {
+      this.textSearch = searchQuery;
+    }
   },
-  beforeRouteEnter(to, from) {
-    // called before the route that renders this component is confirmed.
-    // does NOT have access to `this` component instance,
-    // because it has not been created yet when this guard is called!
-    console.log('beforeRouteEnter called');
-  },
-  beforeRouteUpdate(to, from) {
-    // called when the route that renders this component has changed, but this component is reused in the new route.
-    // For example, given a route with params `/users/:id`, when we navigate between `/users/1` and `/users/2`,
-    // the same `UserDetails` component instance will be reused, and this hook will be called when that happens.
-    // Because the component is mounted while this happens, the navigation guard has access to `this` component instance.
-    console.log('beforeRouteUpdate called');
-  },
-  beforeRouteLeave(to, from) {
-    // called when the route that renders this component is about to be navigated away from.
-    // As with `beforeRouteUpdate`, it has access to `this` component instance.
-    console.log('beforeRouteLeave called');
-  },
-  beforeUpdate() {
-    // console.log('beforeUpdated called');
-    // Start loading overlay
-    this.isLoading = true;
-  },
-  updated() {
-    // console.log('updated called');
-    // Stop loading overlay
-    this.isLoading = false;
+  computed: {
+    ...mapState(['loading']),
+    ...mapGetters(['loading']),
+    startLoading() {
+      this.$store.commit('loading/setLoadingStatus', true);
+    },
+    stopLoading() {
+      this.$store.commit('loading/setLoadingStatus', false);
+    }
   },
   methods: {
-    initialize(toParams = undefined) {
-      /*
-      // If the user do not navigate to other category page, and land on All Product page
-      let currentUrl = this.$route.path.split("/", 3);
-      if (
-        (toParams === undefined && this.productType == undefined) ||
-        (currentUrl.length > 2 && currentUrl[2] == "all")
-      ) {
-        this.pType = "all";
-      }
-      // productType is passed by the router (Defined in @/router/index.js)
-      // If the user click on the other category page
-      else if (toParams !== undefined) {
-        this.pType = toParams.productType;
-      } else if (this.productType.length > 0) {
-        this.pType = this.productType;
-      }
-      // console.log('toParams null: ' + (toParams == undefined) + ', product type: ' + this.productType + ', pType: ' + this.pType);
-      this.pType = this.$route.params.productType == {} ? "all" : this.$route.params.productType;
-
-      // if the breadcrumb title is empty
-      // then we will set the title to based on the product type
-      if (this.pType != "all")
-        breadcrumbTitle = this.getProductCategoryTitle(this.pType);
-      // Set the breadcrumb title
-
-      */
-      this.pType = this.$route.params.productType;
+    initialize() {
+      // get productType param value from route, default is all
+      this.pType = this.$route.params.productType ?? 'all';
       let breadcrumbTitle = this.getProductCategoryTitle(this.pType);
       
       if (this.breadcrumbs.length > 1) this.breadcrumbs[1] = breadcrumbTitle;
@@ -365,7 +316,7 @@ export default {
             p.productCatg.toLowerCase()
           );
           // If there is any text keyed into the search field, then apply filter to products list
-          if (this.textSearch !== undefined || this.textSearch.length > 0) {
+          if (this.textSearch !== undefined && this.textSearch.length > 0) {
             isInclude &= p.productTitle
               .toLowerCase()
               .includes(this.textSearch.toLowerCase());
@@ -375,7 +326,7 @@ export default {
         });
       } else {
         // if user had keyed in the keyword, then filter the list
-        if (this.textSearch !== undefined || this.textSearch.length > 0) {
+        if (this.textSearch !== undefined && this.textSearch.length > 0) {
           templist = templist.filter((p) =>
             p.productTitle.toLowerCase().includes(this.textSearch.toLowerCase())
           );
@@ -413,17 +364,18 @@ export default {
       // Reset current page to 1
       this.currentPage = 1;
       this.filteredList = templist;
+      this.stopLoading;
     },
     onSelectedCategoryChange(data) {
       this.selectedCategory = data;
     },
     onPriceRangeChange(data) {
-      this.isLoading = true;
-      if (this.priceRangeTimeout !== undefined)
-        clearTimeout(this.priceRangeTimeout);
+      this.startLoading;
+      if (this.priceRangeTimeout !== undefined) clearTimeout(this.priceRangeTimeout);
+
       this.priceRangeTimeout = setTimeout(() => {
         this.priceRange = data;
-        this.isLoading = false;
+      this.stopLoading;
       }, 550);
     },
     calculateProductPrice(p) {
@@ -453,6 +405,9 @@ export default {
     selectedSort() {
       this.filterProducts();
     },
+  },
+  destroyed() {
+    this.routeUnwatcher();
   },
   components: {
     ProductCard,

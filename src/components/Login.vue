@@ -1,23 +1,23 @@
 <template>
   <v-container fluid class="text-center">
-    <img
-      :src="require('../assets/logo.svg')"
-      :class="my - 3"
-      contain
-      :height="150"
-    />
     <h2>Login</h2>
-
     <v-col>
-      <v-card class="mx-auto">
+      <v-card 
+        class="mx-auto"
+        variant="flat"
+      >
         <v-card-item>
           <v-sheet width="350" class="mx-auto">
-            <v-form>
+            <v-form 
+              ref="form" 
+              v-model="valid"
+            >
               <v-text-field
                 v-model="email"
                 type="email"
                 name="email"
                 label="Email"
+                autocomplete="current-email"
                 :autofocus="true"
                 :rules="emailRule"
               ></v-text-field>
@@ -26,6 +26,7 @@
                 v-model="password"
                 name="Password"
                 label="Password"
+                autocomplete="current-password"
                 :type="showPassword ? 'text' : 'password'"
                 :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 :rules="passwordRule"
@@ -69,16 +70,13 @@
                   </v-card>
                 </v-dialog>
               </a>
-              <v-btn color="primary" class="mt-2" block @click="promptDialog()">
+              <v-btn 
+                color="primary" 
+                class="mt-2" 
+                block
+                @click="login"
+              >
                 Login
-                <Dialog
-                  ref="loginDialog"
-                  :isLoading="true"
-                  :persistent="true"
-                  :activator="'parent'"
-                  :title="'Loading'"
-                  :desc="'Please wait......'"
-                ></Dialog>
               </v-btn>
 
               <v-spacer></v-spacer>
@@ -98,11 +96,15 @@
 </template>
 
 <script>
-import Dialog from "@/components/misc/dialogs/Dialog.vue";
+import { useDialog } from "@/assets/js/SweetAlert2Dialog";
+import { usePOST } from '@/assets/js/HttpManager';
+import { useToast } from "@/assets/js/SweetAlert2Dialog";
+import { mapGetters, mapState } from "vuex";
 
 export default {
   name: "Login",
   data: () => ({
+    valid: false,
     email: "",
     password: "",
     resetEmail: "",
@@ -118,22 +120,29 @@ export default {
     ],
     passwordRule: [(v) => !!v || "Password is required!"],
   }),
-  mounted() {
-    setTimeout(() => {
-      this.$refs.loginDialog.dismissDialog();
-      console.log("3 seconds passed");
-    }, 5000);
+  created() {
+    this.$store.commit('loading/setLoadingStatus', false);
+  },
+  computed: {
+    ...mapState(['auth', 'loading']),
+    ...mapGetters(['auth', 'loading'])
   },
   methods: {
     forgetPassword() {
       console.log("forget password clicked");
     },
-    promptDialog() {
-      this.$refs.loginDialog.showDialog();
-    },
-  },
-  components: {
-    Dialog,
-  },
+    login() {
+      this.$refs.form.validate();
+      if(this.valid) {
+        console.log('login form valid');
+
+        let d = {
+          'email': this.email,
+          'password': this.password
+        };
+        this.$store.dispatch('auth/login', d);
+      }
+    }
+  }
 };
 </script>

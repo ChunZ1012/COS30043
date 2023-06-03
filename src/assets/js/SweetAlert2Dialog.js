@@ -2,19 +2,29 @@ import Swal from "sweetalert2";
 
 export function useDialog(
   title,
-  description,
-  showCancelButton = true,
-  sticky = false,
-  confirmButtonAction = (r) => {}
+  options = {
+    description: "",
+    icon: "success",
+    showCancelButton: false,
+    sticky: false,
+    confirmButtonAction: (r) => {},
+    didOpen: () => {},
+    didClose: () => {}
+  }
 ) {
   const d = Swal.fire({
     title: title,
-    html: description,
-    showCancelButton: showCancelButton,
-    allowOutsideClick: !sticky,
-    allowEscapeKey: !sticky,
+    html: options.description,
+    icon: options.icon,
+    showCancelButton: options.showCancelButton,
+    allowOutsideClick: !options.sticky,
+    allowEscapeKey: !options.sticky,
+    didOpen: options['didOpen'] !== undefined ? options.didOpen() : () => {},
+    didClose: options['didClose'] !== undefined ? options.didClose() : () => {}
   }).then((r) => {
-    confirmButtonAction(r);
+    if(options['confirmButtonAction'] !== undefined) {
+      options.confirmButtonAction(r);
+    }
   });
 
   return d;
@@ -42,15 +52,18 @@ export function useLoading(
   return d;
 }
 
-export function useToast(title, icon = "success") {
-  const d = Swal.fire({
+const Toast = Swal.mixin({
+  toast:true,
+  position:'top-right',
+  timer:1750,
+  timerProgressBar: true,
+  showConfirmButton:false
+});
+
+export function useToast(title, icon = 'success') {
+  const d = Toast.fire({
     title: title,
-    icon: icon,
-    toast: true,
-    position: "top-right",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
+    icon: icon
   });
 
   return d;

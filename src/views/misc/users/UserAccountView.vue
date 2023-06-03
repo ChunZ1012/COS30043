@@ -1,18 +1,18 @@
 <template>
-  <Dialog></Dialog>
+  <UserAccount />
 </template>
 
 <script>
 import { defineComponent } from "vue";
 
 // Components
-import Dialog from "@/components/misc/dialogs/Dialog.vue";
+import UserAccount from "@/components/misc/users/UserAccount.vue";
 
 export default defineComponent({
-  name: "DialogView",
+  name: "UserAccountView",
 
   components: {
-    Dialog,
+    UserAccount,
   },
 });
 </script>

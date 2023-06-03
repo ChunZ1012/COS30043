@@ -6,7 +6,11 @@
       class="w-100 mx-auto mb-3"
       height="500"
     >
-      <v-carousel hide-delimiter-background show-arrows="hover" cycle>
+      <v-carousel 
+        :hide-delimiter-background="true" 
+        :show-arrows="'hover'" 
+        cycle
+      >
         <v-carousel-item
           v-for="(slider, i) in sliders"
           :key="i"
@@ -26,13 +30,18 @@
     </v-card>
   </v-row>
 
-  <ProductsCarousel
-    v-for="(type, key) in productTypes"
-    :key="key"
-    :products="getProductByCategory(type)"
-    :title="getProductCategoryTitle(type)"
-    :linkTo="type"
-  ></ProductsCarousel>
+  <v-fade-transition
+    :group="true"
+  >
+    <ProductsCarousel
+      v-if="!isLoading"
+      v-for="(type, key) in productTypes"
+      :key="key"
+      :products="getProductByCategory(type)"
+      :title="getProductCategoryTitle(type)"
+      :linkTo="type"
+    ></ProductsCarousel>
+  </v-fade-transition>
 </template>
 
 <script>
@@ -40,6 +49,8 @@ import { useGET } from "@/assets/js/HttpManager";
 import ProductsCarousel from "@/views/misc/products/ProductsCarouselView.vue";
 import ProductCategoryEnum from "@/assets/js/enums/ProductCategoryEnum.js";
 import SliderData from "@/assets/data/Sliders.json";
+import { mapState } from "vuex";
+import { BASEURL } from "@/inc/const";
 
 export default {
   name: "Home",
@@ -56,19 +67,22 @@ export default {
     this.getProductData();
     this.sliders = SliderData;
   },
+  computed: {
+    ...mapState(['auth', 'loading'])
+  },
   methods: {
     getProductData() {
-      this.isLoading = true;
+      // this.$store.commit('loading/setLoadingStatus', true);
       // Set api url
-      let url = "http://localhost/COS30043/index.php/products/list?desc=false";
+      let url = `${BASEURL}/products/list?desc=false`;
       // fetch data from api and assign to local variables
-      const { error, stop } = useGET(url, {
-        callback: (r) => {
+      useGET(url, {
+        callback: (r, e) => {
           this.products = r;
           // Get distinct product type value from product list
           this.productTypes = new Set(this.products.map((p) => p.productType));
-          stop();
           // Stop loading overlay
+          this.$store.commit('loading/setLoadingStatus', false);
           this.isLoading = false;
         },
       });
