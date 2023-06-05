@@ -7,7 +7,9 @@
         variant="flat"
       >
         <v-card-item>
-          <v-sheet width="350" class="mx-auto">
+          <v-sheet 
+            class="mx-auto col-12 col-md-4"
+          >
             <v-form 
               ref="form" 
               v-model="valid"

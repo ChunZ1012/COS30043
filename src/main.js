@@ -36,24 +36,6 @@ const v = createVuetify({
   },
 });
 
-/*
-const vuetify = createVuetify({
-    theme: {
-        themes: {
-            light: {
-                dark:false,
-                colors: {
-                    primary: colors.indigo.darken-2,
-                    secondary: colors.blue.lighten-1
-                }
-            },
-            dark: {
-                dark:true
-            }
-        }
-    }
-});
-*/
 const sw2Theme = {
   confirmButtonColor: colors.indigo.darken2,
   cancelButtonColor: colors.red.darken2,
@@ -65,6 +47,3 @@ const app = createApp(App)
   .use(vuetify)
   .use(store)
   .mount("#app");
-
-// app.config.globalProperties.$windowResize = setupWindowResizeWatcher();
-// app.mount("#app");

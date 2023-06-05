@@ -332,7 +332,7 @@ export default {
                     name: "deliveryName",
                     required: true,
                     enabled: true,
-                    value: "Johann"
+                    value:""
                 },
                 {
                     type:"text",
@@ -341,7 +341,7 @@ export default {
                     name: "deliveryAddress1",
                     required: true,
                     enabled: true,
-                    value: "No. 5 Jalan SS 21/39, Damansara Uptown,"
+                    value:""
                 },
                 {
                     type:"text",
@@ -350,7 +350,7 @@ export default {
                     name: "deliveryAddress2",
                     required: true,
                     enabled: true,
-                    value: "47400 Petaling Jaya, Selangor"
+                    value:""
                 },
                 {
                     type:"text",
@@ -359,7 +359,7 @@ export default {
                     name: "deliveryContact",
                     required: true,
                     enabled: true,
-                    value: "012-9928263"
+                    value:""
                 },
                 {
                     type:"text",
@@ -371,7 +371,7 @@ export default {
                         (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || "Invalid email format!"
                     ],
                     enabled: true,
-                    value: "testing@test.com"
+                    value:""
                 },
             ],
             resetPasswordInputFields: [

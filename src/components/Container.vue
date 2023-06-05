@@ -1,7 +1,10 @@
 <template>
   <nav class="navbar navbar-expand-md nav-theme">
     <div class="container-fluid">
-      <h4>X-MOBILE</h4>
+      <a
+        href="/"
+        class="text-decoration-none text-dark"
+      ><h4>X-MOBILE</h4></a>
       <button
         class="navbar-toggler"
         data-bs-toggle="collapse"

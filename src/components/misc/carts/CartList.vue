@@ -7,6 +7,7 @@
       class="p-1 p-md-3" 
     >
       <h2>{{ breadcrumbTitle }}</h2>
+
       <v-table
         class="w-100 w-md-95 mx-auto"
       >
@@ -17,7 +18,15 @@
             @change="onCheckAllItem"
           ></v-checkbox>
         </thead>
-        <tr v-for="cart in carts">
+        
+        <h3
+          class="mt-1 p-1 fw-bold"
+          v-if="carts == null || carts == undefined || carts.length < 1"
+        ><i>No product yet to be added to your cart. Consider adding something in?</i></h3>
+        <tr
+          v-else 
+          v-for="cart in carts"
+        >
           <CartCard
             :cart="cart"
             @onToggleItem="onSingleItemToggleCheck"
@@ -86,10 +95,12 @@ export default {
       showCheckoutButton: false,
       // Loading
       isLoading: true,
+      // Vuex Watcher
+      cartWatcher: null
     };
   },
   created() {
-    this.getCarts();
+    this.getCarts();  
   },
   computed: {
     ...mapState(['auth', 'cart', 'loading']),
@@ -98,7 +109,7 @@ export default {
   methods: {
     getCarts() {
       this.$store.commit("cart/fetchCartData");
-      this.$store.watch(
+      this.cartWatcher = this.$store.watch(
         (state, getters) => {
           return getters['cart/carts'];
         },
@@ -195,7 +206,10 @@ export default {
       });
       this.totalPrice = totalPrice;
       this.showCheckoutButton = checkedCount > 0;
-    },
+    }
+  },
+  destroyed() {
+    this.cartWatcher();
   },
   components: {
     CartCard,

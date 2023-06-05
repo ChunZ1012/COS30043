@@ -24,7 +24,12 @@
           <v-window
             v-model="currentTab"
           >
+            <h3
+              class="mt-1 p-1 fw-bold"
+              v-if="orders == null || orders == undefined || orders.length < 1"
+            ><i>No order yet to be made. Consider adding some orders? </i></h3>
             <v-window-item
+              v-else
               v-for="(o, idx) in getOrderStatusEnum"
               :key="idx"
               :value="idx"

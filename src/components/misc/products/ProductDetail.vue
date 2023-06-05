@@ -107,6 +107,10 @@
               :rules="qtyRule"
             >
             </v-text-field>
+            <p
+              class="fw-bold fs-6"
+              style="color:rgb(186, 121, 1)"
+            ><i>In Stock: {{ getVariantAvailQty }}</i>  </p>
           </v-col>
         </template>
         <v-spacer></v-spacer>
