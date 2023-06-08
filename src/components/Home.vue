@@ -66,6 +66,7 @@ export default {
   created() {
     this.getProductData();
     this.sliders = SliderData;
+    this.getBanners();
   },
   computed: {
     ...mapState(['auth', 'loading'])
@@ -85,6 +86,23 @@ export default {
           this.$store.commit('loading/setLoadingStatus', false);
           this.isLoading = false;
         },
+      });
+    },
+    getBanners() {
+      this.sliders = [];
+      let url = `${BASEURL}/banners/list`;
+      useGET(url, {
+        callback: (r, e) => { 
+          if(e) console.log(e);
+          else {
+            r.forEach(rx => {
+              let d = {
+                url: rx.banner
+              };
+              this.sliders.push(d);
+            });
+          }
+        }
       });
     },
     getProductByCategory(category) {
